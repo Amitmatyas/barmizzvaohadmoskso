@@ -4,10 +4,74 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הפניה להזמנה</title>
-    <meta http-equiv="refresh" content="0; url=https://www.figma.com/file/DNlNGGX03AewIGlTh6QsUa?type=design&node-id=2011%3A4&mode=design">
+    <title>הזמנה לבר מצווה</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* רקע בהיר להדגשת המלבן */
+            text-align: center; /* מרכז טקסט ותמונות */
+        }
+
+        .container {
+            background-color: #fff; /* רקע לבן למלבן */
+            padding: 30px;
+            border-radius: 10px; /* פינות מעוגלות */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* צל למלבן */
+            max-width: 400px; /* רוחב מקסימלי למלבן */
+            width: 90%; /* רוחב רספונסיבי */
+            box-sizing: border-box; /* כולל פאדינג ובורדר ברוחב */
+        }
+
+        .logo {
+            max-width: 120px; /* גודל לוגו */
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        p {
+            color: #F58221; /* צבע כתום */
+            font-size: 1.2em;
+            font-weight: 700; /* פונט עבה יותר לטקסט ההפניה */
+            margin-top: 0;
+        }
+    </style>
 </head>
 <body>
-    <p>מפנה אותך להזמנה</p>
+
+    <div class="container">
+        <img src="https://ibb.co/4wDB0WX6" alt="לוגו בר מצווה" class="logo">
+        <h1>בר המצווה של עמית מטיאס</h1>
+        <p>מפנה אותך להזמנה</p>
+    </div>
+
+    <script>
+        // JavaScript להפניה אוטומטית לאחר השהיה
+        const redirectUrl = "https://www.figma.com/file/DNlNGGX03AewIGlTh6QsUa?type=design&node-id=2011%3A4&mode=design";
+        const delayInMilliseconds = 5000; // 5 שניות
+
+        setTimeout(function() {
+            window.location.replace(redirectUrl);
+        }, delayInMilliseconds);
+
+        // חלופה אם רוצים שהעמוד המפנה יישמר בהיסטוריה:
+        // setTimeout(function() {
+        //     window.location.href = redirectUrl;
+        // }, delayInMilliseconds);
+    </script>
+
 </body>
 </html>
