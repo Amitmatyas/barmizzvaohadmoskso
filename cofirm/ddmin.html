@@ -57,11 +57,12 @@
         }
 
         /* סגנון לסטטוס ההגעה - מיושם על הטקסט בתוך התא */
-        .current-status-text.status-מגיע-ה { /* שם הקלאס מותאם לערך בעברית */
+        /* שמות הקלאסים מותאמים לערכים בעברית עם החלפת רווחים/לוכסנים במקפים */
+        .current-status-text.status-מגיע-ה {
             color: #155724; /* צבע ירוק */
         }
 
-        .current-status-text.status-לא-מגיע-ה { /* שם הקלאס מותאם לערך בעברית */
+        .current-status-text.status-לא-מגיע-ה {
             color: #721c24; /* צבע אדום */
         }
 
@@ -84,6 +85,7 @@
             display: flex; /* כדי שהאלמנטים יהיו בשורה */
             align-items: center; /* ליישור אנכי למרכז */
             gap: 10px; /* מרווח בין האלמנטים */
+            flex-wrap: wrap; /* מעבר שורה אם אין מספיק מקום */
         }
 
         .status-btn {
@@ -121,10 +123,10 @@
 
          /* Style for the status text within the cell */
         .current-status-text {
-             font-weight: bold; /* Keep the text bold */
-             min-width: 60px; /* Give it a minimum width so layout doesn't jump */
-             text-align: center; /* Center the text */
-             /* The color is applied by the specific status classes above */
+             font-weight: bold; /* הטקסט יהיה מודגש */
+             min-width: 80px; /* הגדלת הרוחב המינימלי ליתר ביטחון בגלל הטקסט הארוך יותר */
+             text-align: center; /* מרכוז הטקסט */
+             /* הצבע מוגדר בקלאסים הספציפיים למעלה */
         }
 
         /* סגנון לקישורי המייל */
@@ -185,6 +187,14 @@
         const attendeesTableBody = document.getElementById('attendeesTableBody');
         const statusMessageDiv = document.getElementById('statusMessage');
 
+        // פונקציה לייצר שם קלאס תקין מסטטוס ההגעה (מחליף רווחים ולוכסנים במקפים)
+        function getStatusClass(statusString) {
+             if (!statusString) return ''; // טיפול במקרה של סטטוס ריק או null
+             // החלף רווחים ולוכסנים במקפים גלובלית
+             return 'status-' + statusString.replace(/[\s/]/g, '-');
+        }
+
+
         // פונקציה לעדכון סטטוס ההגעה ב-Firestore ובעדכון התצוגה בשורה הספציפית
         async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
             // מצא את הכפתורים בשורה ונטרל אותם בזמן העדכון
@@ -205,9 +215,11 @@
                 // עדכן את הטקסט של הסטטוס
                 statusTextSpan.textContent = newStatus;
 
-                // הסר את קלאסי הסטטוס הישנים מהספאן והוסף את החדש
+                // הסר את קלאסי הסטטוס הישנים מהספאן
                 statusTextSpan.classList.remove('status-מגיע-ה', 'status-לא-מגיע-ה');
-                statusTextSpan.classList.add('status-' + newStatus.replace(' ', '-')); // התאמת שם הקלאס
+                 // הוסף את קלאס הסטטוס החדש
+                statusTextSpan.classList.add(getStatusClass(newStatus));
+
 
                 console.log(`Status updated for ${attendeeId} to ${newStatus}`);
 
@@ -267,20 +279,20 @@
                 statusTextSpan.classList.add('current-status-text'); // קלאס לטקסט הסטטוס
                 statusTextSpan.textContent = attendee.attendance;
                  // הוספת קלאס הצבע לספאן בהתאם לסטטוס הנוכחי
-                statusTextSpan.classList.add('status-' + attendee.attendance.replace(' ', '-'));
+                statusTextSpan.classList.add(getStatusClass(attendee.attendance));
 
 
                 const attendBtn = document.createElement('button');
-                attendBtn.textContent = 'מגיע';
+                attendBtn.textContent = 'מגיע/ה'; // כיתוב מלא
                 attendBtn.classList.add('status-btn', 'attend-btn'); // קלאסים לסגנון
                 attendBtn.dataset.id = attendee.id; // שמירת ה-ID בכפתור
-                attendBtn.dataset.status = 'מגיע'; // שמירת הסטטוס שהכפתור מייצג
+                attendBtn.dataset.status = 'מגיע/ה'; // שמירת הסטטוס המלא שהכפתור מייצג
 
                 const notAttendBtn = document.createElement('button');
-                notAttendBtn.textContent = 'לא מגיע';
+                notAttendBtn.textContent = 'לא מגיע/ה'; // כיתוב מלא
                 notAttendBtn.classList.add('status-btn', 'not-attend-btn'); // קלאסים לסגנון
                 notAttendBtn.dataset.id = attendee.id; // שמירת ה-ID בכפתור
-                notAttendBtn.dataset.status = 'לא מגיע'; // שמירת הסטטוס שהכפתור מייצג
+                notAttendBtn.dataset.status = 'לא מגיע/ה'; // שמירת הסטטוס המלא שהכפתור מייצג
 
 
                 // הוספת האלמנטים לתא הסטטוס
@@ -292,13 +304,13 @@
                 // הוספת מאזיני אירועים לכפתורים
                 attendBtn.addEventListener('click', (event) => {
                     const id = event.target.dataset.id;
-                    const status = event.target.dataset.status;
+                    const status = event.target.dataset.status; // יכיל 'מגיע/ה'
                     updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
                 });
 
                  notAttendBtn.addEventListener('click', (event) => {
                     const id = event.target.dataset.id;
-                    const status = event.target.dataset.status;
+                    const status = event.target.dataset.status; // יכיל 'לא מגיע/ה'
                     updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
                 });
 
