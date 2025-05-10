@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עמוד ניהול - אישורי הגעה</title>
+     <style>
+        /* העיצוב (CSS) מוטמע כאן */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* סגנון הטבלה */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        /* סגנון לסטטוס ההגעה */
+        .status-מגיע-ה { /* שם הקלאס מותאם לערך בעברית */
+            color: #155724; /* צבע ירוק */
+            font-weight: bold;
+        }
+
+        .status-לא-מגיע-ה { /* שם הקלאס מותאם לערך בעברית */
+            color: #721c24; /* צבע אדום */
+            font-weight: bold;
+        }
+
+         /* סגנון להודעות מצב (טעינה, שגיאה, אין נתונים) */
+        #statusMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555; /* צבע ברירת מחדל לאפור */
+        }
+         #statusMessage.error {
+             color: red; /* צבע אדום לשגיאה */
+         }
+          #statusMessage.loading {
+             color: blue; /* צבע כחול לטעינה */
+         }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>רשימת אישורי הגעה</h1>
+
+        <div id="statusMessage">טוען נתונים...</div> {# אלמנט להצגת הודעות מצב #}
+
+        <table id="attendeesTable" style="display: none;"> {# הטבלה נסתרת כברירת מחדל ותוצג ע"י JS #}
+            <thead>
+                <tr>
+                    <th>שם מלא</th>
+                    <th>אימייל</th>
+                    <th>סטטוס הגעה</th>
+                    </tr>
+            </thead>
+            <tbody id="attendeesTableBody">
+                {# שורות הטבלה יתווספו כאן ע"י JavaScript #}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // --- הגדרות Firebase שלך ---
+        // הדבק כאן את אובייקט ה-firebaseConfig שקיבלת מקונסולת Firebase
+         const firebaseConfig = {
+            apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY", // שנה לשלך
+            authDomain: "tester-69fa9.firebaseapp.com", // שנה לשלך
+            projectId: "tester-69fa9", // שנה לשלך
+            storageBucket: "tester-69fa9.firebasestorage.app", // שנה לשלך
+            messagingSenderId: "378563229004", // שנה לשלך
+            appId: "1:378563229004:web:5136b724eb84fd00e44be9", // שנה לשלך
+            measurementId: "G-BFJ1QQM3MS" // שנה לשלך (אופציונלי)
+        };
+
+        // שם הקולקשן (אוסף) ב-Firestore שבו נשמרים הנתונים
+        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees'; // <= שנה אם בחרת שם אחר
+
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(); // קבלת התייחסות ל-Firestore
+
+        // קבלת הפניות לאלמנטים בטבלה
+        const attendeesTable = document.getElementById('attendeesTable');
+        const attendeesTableBody = document.getElementById('attendeesTableBody');
+        const statusMessageDiv = document.getElementById('statusMessage');
+
+
+        // פונקציה להצגת הנתונים בטבלה
+        function displayAttendees(attendees) {
+            attendeesTableBody.innerHTML = ''; // נקה תוכן קודם
+
+            if (attendees.length === 0) {
+                statusMessageDiv.textContent = 'אין אישורי הגעה עדיין.';
+                statusMessageDiv.className = 'statusMessage'; // ברירת מחדל אפור
+                attendeesTable.style.display = 'none'; // הסתר טבלה
+                statusMessageDiv.style.display = 'block'; // הצג הודעה
+                return;
+            }
+
+            // הצג טבלה והסתר הודעה
+            attendeesTable.style.display = 'table'; // הצג טבלה
+            statusMessageDiv.style.display = 'none'; // הסתר הודעה
+
+            // יצירת שורות הטבלה מנתוני המשתתפים
+            attendees.forEach(attendee => {
+                const row = attendeesTableBody.insertRow(); // הוספת שורה חדשה לטבלה
+
+                // הוספת תאים לשורה
+                const nameCell = row.insertCell(0);
+                const emailCell = row.insertCell(1);
+                const attendanceCell = row.insertCell(2);
+                // אופציונלי: הוספת תא לחותמת זמן
+                // const timestampCell = row.insertCell(3);
+
+                // הכנסת הנתונים לתאים
+                nameCell.textContent = attendee.full_name;
+                emailCell.textContent = attendee.email;
+                attendanceCell.textContent = attendee.attendance;
+
+                 // הוספת קלאס לתא הסטטוס לצורך עיצוב צבע
+                 // החלפת רווחים ב '-' כדי להתאים לשמות הקלאסים ב-CSS
+                 const statusClass = 'status-' + attendee.attendance.replace(' ', '-');
+                 attendanceCell.classList.add(statusClass);
+
+
+                // אופציונלי: פרמוט והצגת חותמת זמן
+                // if (attendee.timestamp) {
+                //     const date = attendee.timestamp.toDate(); // המרה מ-Firebase Timestamp לאובייקט Date של JS
+                //     timestampCell.textContent = date.toLocaleString(); // הצגת תאריך ושעה בפורמט מקומי
+                // } else {
+                //     timestampCell.textContent = 'N/A';
+                // }
+            });
+        }
+
+        // פונקציה לטעינת נתונים מ-Firestore
+        async function loadAttendees() {
+            statusMessageDiv.textContent = 'טוען נתונים...';
+            statusMessageDiv.className = 'statusMessage loading'; // צבע כחול לטעינה
+            statusMessageDiv.style.display = 'block'; // הצג הודעה
+
+            try {
+                // --- שליפת נתונים מ-Firestore ---
+                // קבלת כל המסמכים מהקולקשן, ממוינים לפי חותמת הזמן (מהחדש לישן)
+                const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
+                                         .orderBy('timestamp', 'desc') // מיון מהחדש לישן
+                                         .get(); // קבלת snapshot של כל המסמכים
+
+                // המרת הנתונים לפורמט נוח (מערך של אובייקטים)
+                const attendees = snapshot.docs.map(doc => ({
+                    id: doc.id, // הוספת ה-ID של המסמך (במקרה זה, זה האימייל)
+                    ...doc.data() // הוספת שאר הנתונים מהמסמך
+                }));
+
+                // הצגת הנתונים בטבלה
+                displayAttendees(attendees);
+
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+                // הצגת הודעת שגיאה
+                statusMessageDiv.textContent = `שגיאה בשליפת הנתונים: ${error.message}`;
+                statusMessageDiv.className = 'statusMessage error'; // צבע אדום לשגיאה
+                attendeesTable.style.display = 'none'; // וודא שהטבלה מוסתרת במקרה שגיאה חמורה
+
+            }
+        }
+
+        // טעינת הנתונים כאשר העמוד נטען במלואו
+        window.addEventListener('load', loadAttendees);
+
+        // אופציונלי: האזנה לשינויים בזמן אמת (אם רוצים שהטבלה תתעדכן אוטומטית)
+        // db.collection(FIRESTORE_COLLECTION_NAME).orderBy('timestamp', 'desc')
+        //     .onSnapshot(snapshot => {
+        //         const attendees = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        //         displayAttendees(attendees);
+        //     }, error => {
+        //         console.error("Error listening for changes: ", error);
+        //         statusMessageDiv.textContent = `שגיאה בהאזנה לשינויים: ${error.message}`;
+        //         statusMessageDiv.className = 'statusMessage error';
+        //     });
+    </script>
+</body>
+</html>
