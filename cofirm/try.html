@@ -4,145 +4,259 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>אישור הגעה לבר המצווה של עמית מטיאס</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✉️</text></svg>">
     <style>
+        /* העיצוב (CSS) מוטמע כאן - העתק את העיצוב המעוצב מהתגובה הקודמת */
         body {
             font-family: 'Heebo', sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 20px;
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-        .header-container {
-            background-color: #e9ecef;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        h1 {
-            color: #3777b3;
             margin: 0;
-            font-size: 2.5rem;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        p {
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #333;
             margin-bottom: 25px;
-            font-size: 1.15rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
             color: #555;
-        }
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 40px;
-        }
-        .button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #fff;
             font-weight: bold;
-            font-size: 1.2rem;
-            transition: background-color 0.3s ease;
         }
-        .button-black {
-            background-color: #000;
-        }
-        .button-blue {
-            background-color: #31CDFE;
-        }
-        .button:hover {
-            opacity: 0.9;
-        }
-        .button-logo-container {
-            width: 30px;
-            height: 30px;
-            margin-left: 15px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .button-logo {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 6px;
-            vertical-align: middle;
-        }
-        .separate-logo-area {
-            margin-top: 30px;
-        }
-        .separate-logo-link {
-            display: inline-block;
-        }
-        .separate-logo-image {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 8px;
-        }
-        .additional-text {
-            margin-top: 30px;
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
             font-size: 1rem;
-            color: #777;
         }
-        .signature {
-            margin-top: 40px;
-            font-style: italic;
-            color: #777;
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 1.1rem;
+            color: white;
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+            max-width: 150px;
+        }
+
+        button[type="submit"].coming { /* שינוי מ name ל-class עבור JS */
+            background-color: #4CAF50; /* ירוק */
+        }
+
+        button[type="submit"].coming:hover {
+            background-color: #45a049;
+        }
+
+        button[type="submit"].not_coming { /* שינוי מ name ל-class עבור JS */
+            background-color: #f44336; /* אדום */
+        }
+
+        button[type="submit"].not_coming:hover {
+            background-color: #d32f2f;
+        }
+
+        /* סגנון להודעות הצלחה/שגיאה */
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            display: none; /* נסתר כברירת מחדל ויוצג ע"י JS */
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-container">
-            <h1>ההגעה לבר המצווה של עמית מטיאס אושרה</h1>
-        </div>
+    <div class="form-container">
+        <h1>אישור הגעה לאירוע</h1>
 
-  <p>היי {{guest_name}},</p>
-        <p>תודה רבה שאישרת הגעה.</p>
-        <p>מקווה לראותך!</p>
+        <div id="responseMessage" class="message"></div>
 
-        <div class="button-container">
-            <a href="#" class="button button-black">
-                <div class="button-logo-container">
-                    <img src="https://www.designfreelogoonline.com/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%95%D7%92%D7%95-%D7%97%D7%99%D7%A0%D7%9D-%D7%9E%D7%99%D7%AA%D7%95%D7%92-%D7%A2%D7%A1%D7%A7%D7%99/" alt="לוגו" class="button-logo">
-                </div>
-                לפרטי האירוע
-            </a>
-            <a href="https://ul.waze.com/ul?place=ChIJI9v6Xni6HRURWebdUTrRLN8&ll=32.79366010%2C35.03827050&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" class="button button-blue">
-                <div class="button-logo-container">
-                    <img src="https://www.designfreelogoonline.com/%D7%A2%D7%99%D7%A6%D7%95%D7%91-%D7%9C%D7%95%D7%92%D7%95-%D7%97%D7%99%D7%A0%D7%9D-%D7%9E%D7%99%D7%AA%D7%95%D7%92-%D7%A2%D7%A1%D7%A7%D7%99/" alt="לוגו" class="button-logo">
-                </div>
-                ניווט למקום
-            </a>
-        </div>
-        <div class="separate-logo-area">
-            <a href="לינק פייסבוקס" class="separate-logo-link">
-                <img src="לוגו פייבוקס" alt="לוגו גדול" class="separate-logo-image">
-            </a>
-        </div>
+        <form id="attendanceForm">
+            <div class="form-group">
+                <label for="full_name">שם מלא:</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
 
-        <p class="signature">מקווה לראותכם,<br>עמית מטיאס</p>
+            <div class="form-group">
+                <label for="email">אימייל:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="coming">מגיע/ה</button>
+                <button type="submit" class="not_coming">לא מגיע/ה</button>
+            </div>
+        </form>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // <= החלף במפתח הפומבי שלך מ-EmailJS
+        })();
+    </script>
+
+    <script>
+        // --- הגדרות Firebase שלך ---
+        // הדבק כאן את אובייקט ה-firebaseConfig שקיבלת מקונסולת Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY", // שנה לשלך
+            authDomain: "tester-69fa9.firebaseapp.com", // שנה לשלך
+            projectId: "tester-69fa9", // שנה לשלך
+            storageBucket: "tester-69fa9.firebasestorage.app", // שנה לשלך
+            messagingSenderId: "378563229004", // שנה לשלך
+            appId: "1:378563229004:web:5136b724eb84fd00e44be9", // שנה לשלך
+            measurementId: "G-BFJ1QQM3MS" // שנה לשלך (אופציונלי אם לא משתמש באנליטיקס)
+        };
+
+        // שם הקולקשן (אוסף) ב-Firestore שבו נשמור את נתוני ההגעה
+        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees'; // <= שנה אם בחרת שם אחר
+
+        // פרטי EmailJS
+        const EMAILJS_SERVICE_ID = 'service_laxsrg8';
+        const EMAILJS_TEMPLATE_ID = 'barmizzva'; // <= שנה לשם התבנית החדשה שלך
+
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(); // קבלת התייחסות ל-Firestore
+
+        // קבלת הפניות לאלמנטים
+        const attendanceForm = document.getElementById('attendanceForm');
+        const fullNameInput = document.getElementById('full_name');
+        const emailInput = document.getElementById('email');
+        const responseMessageDiv = document.getElementById('responseMessage');
+
+        // פונקציה להצגת הודעה
+        function showMessage(message, type) {
+            responseMessageDiv.textContent = message;
+            responseMessageDiv.className = 'message ' + type; // הגדרת קלאס לעיצוב
+            responseMessageDiv.style.display = 'block'; // הצגת האלמנט
+        }
+
+        // פונקציה לשליחת אימייל באמצעות EmailJS
+        function sendConfirmationEmail(email, full_name) {
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email: email,
+                guest_name: full_name, // שימוש בשם 'guest_name' כדי להתאים לתבנית המייל
+                // כאן תוכל להוסיף עוד משתנים אם יש צורך בתבנית האימייל שלך
+            })
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                showMessage('תודה, ההרשמה נקלטה בהצלחה והודעת אישור נשלחה למייל!', 'success');
+            }, function(error) {
+                console.log('FAILED...', error);
+                showMessage('תודה, ההרשמה נקלטה בהצלחה, אך הייתה בעיה בשליחת האימייל.', 'success'); // עדיין נציג הצלחה בשמירה
+            });
+        }
+
+        // האזנה לשליחת הטופס (כפתורי Submit)
+        attendanceForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // מניעת שליחת טופס רגילה (שהיתה גורמת לרענון הדף)
+
+            const full_name = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+
+            // ולידציה בסיסית בצד לקוח
+            if (!full_name || !email) {
+                showMessage('שם מלא ואימייל נדרשים.', 'error');
+                return;
+            }
+
+            // קביעת סטטוס ההגעה לפי הכפתור שנלחץ
+            const submitter = e.submitter;
+            let attendance = '';
+            if (submitter.classList.contains('coming')) {
+                attendance = 'מגיע/ה';
+            } else if (submitter.classList.contains('not_coming')) {
+                attendance = 'לא מגיע/ה';
+            } else {
+                    showMessage('שגיאה: יש לבחור סטטוס הגעה.', 'error');
+                    return;
+            }
+
+            // הכנת הנתונים לשמירה
+            const attendeeData = {
+                full_name: full_name,
+                email: email,
+                attendance: attendance,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() // חותמת זמן של שרת Firebase
+            };
+
+            try {
+                // --- שמירת נתונים ב-Firestore ---
+                const docId = email; // שימוש באימייל כמזהה מסמך
+                await db.collection(FIRESTORE_COLLECTION_NAME).doc(docId).set(attendeeData);
+
+                // אם סטטוס ההגעה הוא "מגיע/ה", שלח אימייל אישור
+                if (attendance === 'מגיע/ה') {
+                    sendConfirmationEmail(email, full_name);
+                } else {
+                    // אם לא מגיע, רק הצג הודעת הצלחה על השמירה
+                    showMessage('תודה, סטטוס ההגעה שלך נקלט בהצלחה!', 'success');
+                }
+
+                // ניקוי הטופס לאחר שליחה מוצלחת (אופציונלי)
+                attendanceForm.reset();
+
+            } catch (error) {
+                console.error("Error writing document: ", error);
+                // הצגת הודעת שגיאה
+                showMessage(`שגיאה בעת שמירת הנתונים: ${error.message}`, 'error');
+            }
+        });
+    </script>
 </body>
 </html>
