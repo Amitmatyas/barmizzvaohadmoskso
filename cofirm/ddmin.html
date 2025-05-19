@@ -160,6 +160,11 @@
     </div>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+      (function() {
+          emailjs.init('YOUR_PUBLIC_KEY'); // <= החלף במפתח הציבורי שלך מ-EmailJS
+      })();
+    </script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
@@ -182,11 +187,6 @@
         // אתחול Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore(); // קבלת התייחסות ל-Firestore
-
-        // אתחול EmailJS
-        (function() {
-            emailjs.init('xMUcc8A1COpyd1SSY'); // <= החלף במפתח הציבורי שלך אם הוא שונה
-        })();
 
         // קבלת הפניות לאלמנטים בטבלה ובהודעת הסטטוס
         const attendeesTable = document.getElementById('attendeesTable');
@@ -307,13 +307,12 @@
                 attendanceCell.appendChild(statusContainer);
 
                 // הוספת מאזיני אירועים לכפתורים
-                attendBtn.addEventListener('click', async (event) => {
+                attendBtn.addEventListener('click', (event) => {
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status; // יכיל 'מגיע/ה'
                     const rowElement = event.target.closest('tr'); // קבלת אלמנט השורה
 
-                    // עדכון סטטוס ב-Firestore
-                    await updateAttendanceStatus(id, status, rowElement);
+                    updateAttendanceStatus(id, status, rowElement); // קריאה לפונקציית העדכון והעברת אלמנט השורה
 
                     // שליחת אימייל רק אם הסטטוס הוא "מגיע/ה"
                     if (status === 'מגיע/ה') {
@@ -321,14 +320,14 @@
                         const templateParams = {
                             guest_name: guestName
                         };
-                        try {
-                            const response = await emailjs.send('service_laxsrg8', 'barmizzva', templateParams);
-                            console.log('SUCCESS!', response.status, response.text);
-                            alert(`הסטטוס עודכן והודעת אישור נשלחה ל${guestName}.`);
-                        } catch (error) {
-                            console.error('FAILED...', error);
-                            alert(`הסטטוס עודכן, אך הייתה בעיה בשליחת האימייל ל${guestName}: ${error.message}`);
-                        }
+                        emailjs.send('service_laxsrg8', 'barmizzva', templateParams)
+                            .then(function(response) {
+                                console.log('SUCCESS!', response.status, response.text);
+                                alert(`הסטטוס עודכן והודעת אישור נשלחה ל${guestName}.`);
+                            }, function(error) {
+                                console.error('FAILED...', error);
+                                alert(`הסטטוס עודכן, אך הייתה בעיה בשליחת האימייל ל${guestName}: ${error.message}`);
+                            });
                     }
                 });
 
@@ -336,9 +335,8 @@
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status; // יכיל 'לא מגיע/ה'
                     const rowElement = event.target.closest('tr'); // קבלת אלמנט השורה
-                    updateAttendanceStatus(id, status, rowElement);
+                    updateAttendanceStatus(id, status, rowElement); // קריאה לפונקציית העדכון והעברת אלמנט השורה
                 });
 
                 // אופציונלי: פרמוט והצגת חותמת זמן (אם הוספת עמודה לכך)
-                // const timestampCell = row.insertCell(3);
-                // if (attendee
+                // const timestampCell
