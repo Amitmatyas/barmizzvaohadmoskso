@@ -157,10 +157,10 @@
             })
             .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
-                showMessage('תודה, ההרשמה נקלטה בהצלחה והודעת אישור נשלחה למייל!', 'success');
+                showMessage('תודה, סטטוס ההגעה שלך נקלט בהצלחה!', 'success');
             }, function(error) {
                 console.log('FAILED...', error);
-                showMessage('תודה, ההרשמה נקלטה בהצלחה, אך הייתה בעיה בשליחת האימייל.', 'success');
+                showMessage('אירעה שגיאה, נא פנה לעמית מטיאס.', 'success');
             });
         }
         attendanceForm.addEventListener('submit', async (e) => {
