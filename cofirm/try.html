@@ -6,11 +6,9 @@
     <title>אישור הגעה לבר המצווה של עמית מטיאס</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✉️</text></svg>">
     <style>
-        /* העיצוב (CSS) מוטמע כאן - העתק את העיצוב המעוצב מהתגובה הקודמת */
+        /* העיצוב הבסיסי לטופס */
         body {
-            font-family: 'Heebo', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;
@@ -77,7 +75,7 @@
             max-width: 150px;
         }
 
-        button[type="submit"].coming { /* שינוי מ name ל-class עבור JS */
+        button[type="submit"].coming {
             background-color: #4CAF50; /* ירוק */
         }
 
@@ -85,7 +83,7 @@
             background-color: #45a049;
         }
 
-        button[type="submit"].not_coming { /* שינוי מ name ל-class עבור JS */
+        button[type="submit"].not_coming {
             background-color: #f44336; /* אדום */
         }
 
@@ -115,39 +113,16 @@
             border: 1px solid #f5c6cb;
         }
     </style>
-</head>
-<body>
-    <div class="form-container">
-        <h1>אישור הגעה לאירוע</h1>
 
-        <div id="responseMessage" class="message"></div>
-
-        <form id="attendanceForm">
-            <div class="form-group">
-                <label for="full_name">שם מלא:</label>
-                <input type="text" id="full_name" name="full_name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">אימייל:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="button-group">
-                <button type="submit" class="coming">מגיע/ה</button>
-                <button type="submit" class="not_coming">לא מגיע/ה</button>
-            </div>
-        </form>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("xMUcc8A1COpyd1SSY"); // <= החלף במפתח הפומבי שלך מ-EmailJS
+            emailjs.init("xMUcc8A1COpyd1SSY"); // <= המפתח הפומבי שלך מ-EmailJS
         })();
     </script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
         // --- הגדרות Firebase שלך ---
@@ -166,8 +141,8 @@
         const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees'; // <= שנה אם בחרת שם אחר
 
         // פרטי EmailJS
-        const EMAILJS_SERVICE_ID = 'service_laxsrg8';
-        const EMAILJS_TEMPLATE_ID = 'barmizzva'; // <= שנה לשם התבנית החדשה שלך
+        const EMAILJS_SERVICE_ID = 'service_laxsrg8'; // <= Service ID שלך מ-EmailJS
+        const EMAILJS_TEMPLATE_ID = 'barmizzva';   // <= Template ID שלך מ-EmailJS
 
         // אתחול Firebase
         firebase.initializeApp(firebaseConfig);
@@ -188,7 +163,7 @@
 
         // פונקציה לשליחת אימייל באמצעות EmailJS
         function sendConfirmationEmail(email, full_name) {
-            emailjs.send(service_laxsrg8, barmizzva, {
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                 to_email: email,
                 guest_name: full_name, // שימוש בשם 'guest_name' כדי להתאים לתבנית המייל
                 // כאן תוכל להוסיף עוד משתנים אם יש צורך בתבנית האימייל שלך
