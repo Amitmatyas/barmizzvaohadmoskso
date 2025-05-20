@@ -397,6 +397,19 @@
                 return false;
             }
 
+            // **בדיקה קריטית: וודא שכתובת המייל קיימת ותקפה**
+            if (!email || email.trim() === "" || !email.includes('@') || !email.includes('.')) {
+                console.error(`Attempted to send email to an invalid or empty address: '${email}' for guest: ${guestName}`);
+                if (statusElement) {
+                    statusElement.textContent = "שגיאה: כתובת אימייל ריקה/לא תקינה.";
+                    statusElement.className = "email-status error";
+                    statusElement.style.display = "inline-block";
+                } else {
+                    alert(`שגיאה: לא ניתן לשלוח מייל ל-${guestName} - כתובת האימייל ריקה או לא תקינה.`);
+                }
+                return false;
+            }
+
             try {
                 // הצגת אינדיקטור שליחה
                 if (statusElement) {
@@ -479,14 +492,15 @@
                 
                 bulkEmailStatusElement.textContent = `שולח עדכון ל-${attendingGuests.length} אורחים...`;
                 
-                // מונה לשליחות מוצלחות
+                // מונה לשליחות מוצלחות וכישלונות
                 let successCount = 0;
+                let failCount = 0;
                 
                 // שליחת מייל לכל אורח ברשימה
                 for (const guest of attendingGuests) {
-                    try {
-                        // וודא שקיימת כתובת מייל
-                        if (guest.email && guest.email.trim() !== "") {
+                    // **בדיקה קריטית: וודא שכתובת המייל קיימת ואינה ריקה**
+                    if (guest.email && guest.email.trim() !== "" && guest.email.includes('@') && guest.email.includes('.')) {
+                        try {
                             await sendEmailToGuest(
                                 guest.email, 
                                 guest.full_name, 
@@ -495,18 +509,24 @@
                                 customText // הטקסט המותאם אישית
                             );
                             successCount++;
-                            bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים...`;
-                        } else {
-                            console.warn(`Skipping email for ${guest.full_name} due to missing email address.`);
+                            bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
+                        } catch (err) {
+                            console.error(`שגיאה בשליחת מייל ל-${guest.full_name} (${guest.email}):`, err);
+                            failCount++;
+                            bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
                         }
-                    } catch (err) {
-                        console.error(`שגיאה בשליחת מייל ל-${guest.full_name} (${guest.email || 'אין מייל'}):`, err);
-                        // ממשיך לאורח הבא גם אם יש שגיאה באחד מהם
+                    } else {
+                        console.warn(`מדלג על שליחת מייל ל-${guest.full_name} עקב כתובת אימייל חסרה או לא תקינה: '${guest.email}'.`);
+                        failCount++;
                     }
                 }
                 
-                bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילי עדכון בהצלחה!`;
-                bulkEmailStatusElement.style.color = "#28a745";
+                bulkEmailStatusElement.textContent = `השליחה הסתיימה: ${successCount} מיילים נשלחו בהצלחה, ${failCount} נכשלו.`;
+                if (failCount === 0) {
+                    bulkEmailStatusElement.style.color = "#28a745"; // ירוק אם הכל הצליח
+                } else {
+                    bulkEmailStatusElement.style.color = "#ffc107"; // צהוב אם יש כישלונות
+                }
                 
             } catch (error) {
                 console.error("שגיאה בשליחת מיילים גורפת:", error);
