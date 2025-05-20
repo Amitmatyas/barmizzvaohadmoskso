@@ -139,7 +139,45 @@
             text-decoration: underline; /* הוספת קו תחתון בריחוף */
         }
 
+        /* הוספת סגנון לאייקון הטעינה */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* סטייל לחיווי שליחת מייל */
+        .email-status {
+            font-size: 0.85em;
+            margin-left: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .email-status.sending {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .email-status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .email-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -150,29 +188,42 @@
         <table id="attendeesTable" style="display: none;">
             <thead>
                 <tr>
-                    <th>שם</th> <th>אימייל</th>
+                    <th>שם</th>
+                    <th>אימייל</th>
                     <th>סטטוס הגעה</th>
-                    </tr>
+                </tr>
             </thead>
             <tbody id="attendeesTableBody">
-                </tbody>
+            </tbody>
         </table>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
+    <!-- עדכון ל-EmailJS v4 -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script>
-        // אתחול EmailJS
+        // אתחול EmailJS עם הגרסה החדשה
         (function() {
-            emailjs.init("xMUcc8A1COpyd1SSY"); // מפתח ציבורי שסופק
-            console.log("EmailJS initialized");
+            emailjs.init({
+                publicKey: "xMUcc8A1COpyd1SSY", // מפתח ציבורי שסופק
+                blockHeadless: false, // אפשור שימוש בסביבת פיתוח/בדיקות
+                limitRate: true // הגבלת קצב שליחה למניעת שימוש לרעה
+            });
+            console.log("EmailJS v4 initialized");
         })();
 
-        // פונקציה לשליחת מייל למוזמן
-        function sendEmailToGuest(email, guestName) {
+        // פונקציה משופרת לשליחת מייל למוזמן
+        async function sendEmailToGuest(email, guestName, statusElement) {
             try {
+                // הצגת אינדיקטור שליחה
+                if (statusElement) {
+                    statusElement.textContent = "שולח מייל...";
+                    statusElement.className = "email-status sending";
+                    statusElement.style.display = "inline-block";
+                }
+
                 // הכנת נתונים לשליחה
                 const templateParams = {
                     to_email: email,     // אימייל היעד
@@ -184,38 +235,42 @@
                 
                 console.log("Sending email with params:", JSON.stringify(templateParams));
                 
-                // שליחת המייל באמצעות EmailJS
-                emailjs.send("service_laxsrg8", "barmizzva", templateParams)
-                    .then(function(response) {
-                        console.log("SUCCESS! Email sent to:", email, response.status, response.text);
-                        // אופציונלי: הצגת הודעת הצלחה למשתמש
-                        alert(`מייל נשלח בהצלחה ל${guestName}`);
-                    })
-                    .catch(function(error) {
-                        console.error("FAILED to send email:", error);
-                        // אופציונלי: הצגת הודעת שגיאה למשתמש
-                        alert(`שגיאה בשליחת מייל: ${error.message || 'בדוק את הקונסול לפרטים נוספים'}`);
-                    });
-            } catch (err) {
-                console.error("Exception in sendEmailToGuest:", err);
-                alert("שגיאה בשליחת המייל, בדוק את הקונסול לפרטים נוספים");
+                // שליחת המייל באמצעות EmailJS גרסה 4
+                const response = await emailjs.send("service_laxsrg8", "barmizzva", templateParams);
+                
+                console.log("SUCCESS! Email sent to:", email, response.status, response.text);
+                // עדכון חיווי הצלחה
+                if (statusElement) {
+                    statusElement.textContent = "נשלח בהצלחה";
+                    statusElement.className = "email-status success";
+                }
+                return true;
+            } catch (error) {
+                console.error("FAILED to send email:", error);
+                // עדכון חיווי שגיאה
+                if (statusElement) {
+                    statusElement.textContent = "שגיאה בשליחה";
+                    statusElement.className = "email-status error";
+                }
+                // חיווי שגיאה למשתמש
+                alert(`שגיאה בשליחת מייל: ${error.message || 'בדוק את הקונסול לפרטים נוספים'}`);
+                return false;
             }
         }
 
         // --- הגדרות Firebase שלך ---
-        // הדבק כאן את אובייקט ה-firebaseConfig שקיבלת מקונסולת Firebase
         const firebaseConfig = {
-             apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY", // שנה לשלך
-             authDomain: "tester-69fa9.firebaseapp.com", // שנה לשלך
-             projectId: "tester-69fa9", // שנה לשלך
-             storageBucket: "tester-69fa9.firebasestorage.app", // שנה לשלך
-             messagingSenderId: "378563229004", // שנה לשלך
-             appId: "1:378563229004:web:5136b724eb84fd00e44be9", // שנה לשלך
-             measurementId: "G-BFJ1QQM3MS" // שנה לשלך (אופציונלי)
+             apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
+             authDomain: "tester-69fa9.firebaseapp.com",
+             projectId: "tester-69fa9",
+             storageBucket: "tester-69fa9.firebasestorage.app",
+             messagingSenderId: "378563229004",
+             appId: "1:378563229004:web:5136b724eb84fd00e44be9",
+             measurementId: "G-BFJ1QQM3MS"
         };
 
         // שם הקולקשן (אוסף) ב-Firestore שבו נשמרים הנתונים
-        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees'; // <= שנה אם בחרת שם אחר
+        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees';
 
         // אתחול Firebase
         firebase.initializeApp(firebaseConfig);
@@ -233,7 +288,6 @@
              return 'status-' + statusString.replace(/[\s/]/g, '-');
         }
 
-
         // פונקציה לעדכון סטטוס ההגעה ב-Firestore ובעדכון התצוגה בשורה הספציפית
         async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
             // מצא את הכפתורים בשורה ונטרל אותם בזמן העדכון
@@ -244,8 +298,8 @@
                 // עדכון המסמך ב-Firestore
                 await db.collection(FIRESTORE_COLLECTION_NAME).doc(attendeeId).update({
                     attendance: newStatus,
-                    // אופציונלי: הוספת חותמת זמן לעדכון
-                    // updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    // הוספת חותמת זמן לעדכון
+                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 // מצא את אלמנט הטקסט שמציג את הסטטוס הנוכחי בשורה
@@ -256,21 +310,20 @@
 
                 // הסר את קלאסי הסטטוס הישנים מהספאן
                 statusTextSpan.classList.remove('status-מגיע-ה', 'status-לא-מגיע-ה');
-                 // הוסף את קלאס הסטטוס החדש
+                // הוסף את קלאס הסטטוס החדש
                 statusTextSpan.classList.add(getStatusClass(newStatus));
 
-
                 console.log(`Status updated for ${attendeeId} to ${newStatus}`);
-
+                return true;
             } catch (error) {
                 console.error(`Error updating status for ${attendeeId}: `, error);
                 alert(`שגיאה בעדכון הסטטוס: ${error.message}`); // הצגת הודעת שגיאה למשתמש
+                return false;
             } finally {
                 // הפעל מחדש את הכפתורים לאחר סיום העדכון (הצלחה או כישלון)
                 buttons.forEach(btn => btn.disabled = false);
             }
         }
-
 
         // פונקציה להצגת הנתונים בטבלה
         function displayAttendees(attendees) {
@@ -294,7 +347,6 @@
                 // השתמש ב-attendee.id (שהוא האימייל לפי המיפוי) בתור data attribute
                 row.dataset.id = attendee.id;
 
-
                 // הוספת תאים לשורה
                 const nameCell = row.insertCell(0);
                 const emailCell = row.insertCell(1); // תא זה יכיל את קישור המייל
@@ -309,17 +361,15 @@
                 emailLink.textContent = attendee.email;
                 emailCell.appendChild(emailLink); // הוספת הקישור לתא האימייל
 
-
                 // יצירת אלמנטים לתא הסטטוס והכפתורים
                 const statusContainer = document.createElement('div');
                 statusContainer.classList.add('status-buttons-container'); // קלאס לסגנון flex
 
                 const statusTextSpan = document.createElement('span');
                 statusTextSpan.classList.add('current-status-text'); // קלאס לטקסט הסטטוס
-                statusTextSpan.textContent = attendee.attendance;
-                 // הוספת קלאס הצבע לספאן בהתאם לסטטוס הנוכחי
+                statusTextSpan.textContent = attendee.attendance || 'לא ידוע'; // טיפול במקרה של ערך ריק
+                // הוספת קלאס הצבע לספאן בהתאם לסטטוס הנוכחי
                 statusTextSpan.classList.add(getStatusClass(attendee.attendance));
-
 
                 const attendBtn = document.createElement('button');
                 attendBtn.textContent = 'מגיע/ה'; // כיתוב מלא
@@ -333,51 +383,51 @@
                 notAttendBtn.dataset.id = attendee.id; // שמירת ה-ID בכפתור
                 notAttendBtn.dataset.status = 'לא מגיע/ה'; // שמירת הסטטוס המלא שהכפתור מייצג
 
+                // יצירת אלמנט לחיווי סטטוס שליחת המייל
+                const emailStatusSpan = document.createElement('span');
+                emailStatusSpan.classList.add('email-status');
+                emailStatusSpan.style.display = 'none'; // מוסתר בהתחלה
 
                 // הוספת האלמנטים לתא הסטטוס
                 statusContainer.appendChild(statusTextSpan);
                 statusContainer.appendChild(attendBtn);
                 statusContainer.appendChild(notAttendBtn);
+                statusContainer.appendChild(emailStatusSpan);
                 attendanceCell.appendChild(statusContainer);
 
                 // הוספת מאזיני אירועים לכפתורים
-                attendBtn.addEventListener('click', (event) => {
+                attendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status; // יכיל 'מגיע/ה'
-                    updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
                     
-                    // שליחת מייל למוזמן
-                    const guestName = row.cells[0].textContent; // שם האורח מהתא הראשון בשורה
-                    const guestEmail = row.cells[1].querySelector('a').textContent; // כתובת המייל מהתא השני
-                    sendEmailToGuest(guestEmail, guestName);
+                    // עדכון הסטטוס בפיירבייס
+                    const updateSuccess = await updateAttendanceStatus(id, status, row);
+                    
+                    // אם העדכון הצליח, שלח מייל למוזמן
+                    if (updateSuccess) {
+                        const guestName = row.cells[0].textContent; // שם האורח מהתא הראשון בשורה
+                        const guestEmail = row.cells[1].querySelector('a').textContent; // כתובת המייל מהתא השני
+                        sendEmailToGuest(guestEmail, guestName, emailStatusSpan);
+                    }
                 });
 
-                 notAttendBtn.addEventListener('click', (event) => {
+                notAttendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status; // יכיל 'לא מגיע/ה'
-                    updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
+                    await updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
+                    // לא שולחים מייל אוטומטית למי שלא מגיע, רק מעדכנים סטטוס
                 });
-
-                // אופציונלי: פרמוט והצגת חותמת זמן (אם הוספת עמודה לכך)
-                // const timestampCell = row.insertCell(3);
-                // if (attendee.timestamp) {
-                //      const date = attendee.timestamp.toDate(); // המרה מ-Firebase Timestamp לאובייקט Date של JS
-                //      timestampCell.textContent = date.toLocaleString(); // הצגת תאריך ושעה בפורמט מקומי
-                // } else {
-                //      timestampCell.textContent = 'N/A';
-                // }
             });
         }
 
         // פונקציה לטעינת נתונים מ-Firestore
         async function loadAttendees() {
-            statusMessageDiv.textContent = 'טוען נתונים...';
+            statusMessageDiv.innerHTML = '<div class="loading-spinner"></div> טוען נתונים...';
             statusMessageDiv.className = 'statusMessage loading'; // צבע כחול לטעינה
             statusMessageDiv.style.display = 'block'; // הצג הודעה
             attendeesTable.style.display = 'none'; // הסתר טבלה בזמן טעינה
 
             try {
-                // --- שליפת נתונים מ-Firestore ---
                 // קבלת כל המסמכים מהקולקשן, ממוינים לפי חותמת הזמן (מהחדש לישן)
                 const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
                                              .orderBy('timestamp', 'desc') // מיון מהחדש לישן
@@ -398,17 +448,13 @@
                 statusMessageDiv.textContent = `שגיאה בשליפת הנתונים: ${error.message}`;
                 statusMessageDiv.className = 'statusMessage error'; // צבע אדום לשגיאה
                 attendeesTable.style.display = 'none'; // וודא שהטבלה מוסתרת במקרה שגיאה חמורה
-
             }
         }
 
         // טעינת הנתונים כאשר העמוד נטען במלואו
         window.addEventListener('load', loadAttendees);
 
-        // אופציונלי: האזנה לשינויים בזמן אמת (אם רוצים שהטבלה תתעדכן אוטומטית)
-        // הפעלת onSnapshot תספק עדכונים אוטומטיים, אך יש לוודא שהאופציה של עדכון מקומי (כמו ב-updateAttendanceStatus)
-        // אינה מתנגשת או שמוודאים שלא מנסים לעדכן את ה-UI ידנית אם onSnapshot פעיל.
-        // האפשרות הפשוטה ביותר היא להשתמש ב-onSnapshot בלבד לכל עדכוני ה-UI.
+        // אופציונלי: האזנה לשינויים בזמן אמת (מפעילים בהערה כדי לא לגרום לבלבול)
         /*
         db.collection(FIRESTORE_COLLECTION_NAME).orderBy('timestamp', 'desc')
              .onSnapshot(snapshot => {
@@ -421,11 +467,6 @@
                  attendeesTable.style.display = 'none'; // הסתר טבלה במקרה שגיאה חמורה
              });
         */
-        // הערה: אם תפעיל את onSnapshot, ייתכן שתצטרך להתאים את הלוגיקה של השבתת/הפעלת כפתורים
-        // ב-updateAttendanceStatus, מכיוון ש-onSnapshot יגרום לרינדור מחדש של השורה לאחר העדכון.
-        // ביישום הנוכחי, updateAttendanceStatus מעדכנת את ה-UI ישירות ללא הסתמכות על onSnapshot.
-
-
     </script>
 </body>
 </html>
