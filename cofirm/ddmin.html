@@ -2,7 +2,7 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>אישור הגעה</title>
   <style>
     body {
@@ -17,37 +17,36 @@
     ul {
       list-style: none;
       padding: 0;
-      max-width: 500px;
-      margin: auto;
+      max-width: 600px;
+      margin: 0 auto;
     }
     li {
-      background: white;
-      margin: 10px 0;
+      background: #fff;
+      margin-bottom: 10px;
       padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
       padding: 8px 12px;
-      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #45a049;
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <h1>אישור הגעה</h1>
+  <h1>אישור הגעה לאירוע</h1>
   <ul id="guest-list"></ul>
 
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import {
@@ -59,7 +58,8 @@
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import emailjs from "https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js";
 
-    // אתחול Firebase
+    emailjs.init("xMUcc8A1COpyd1SSY"); // public key שלך
+
     const firebaseConfig = {
       apiKey: "AIzaSyBoogKjvubRXtKLDz9FzL5X27yAWqFvFME",
       authDomain: "bar-mitzva-amit.firebaseapp.com",
@@ -68,11 +68,9 @@
       messagingSenderId: "55047681548",
       appId: "1:55047681548:web:7c1d735dcf94ec19e9c4fb"
     };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    // אתחול EmailJS
-    emailjs.init("xMUcc8A1COpyd1SSY");
 
     async function loadGuests() {
       const querySnapshot = await getDocs(collection(db, "guests"));
@@ -94,18 +92,18 @@
             status: newStatus
           });
 
-          // שליחת מייל דרך EmailJS
+          // === שליחת מייל דרך EmailJS ===
           emailjs.send("service_laxsrg8", "barmizzva", {
             guest_name: data.name
           })
           .then(() => {
-            console.log("Email sent successfully to", data.name);
+            console.log("email sent to", data.name);
           })
           .catch((error) => {
-            console.error("Email sending failed:", error);
+            console.error("emailjs error:", error);
           });
+          // ==============================
 
-          // טען מחדש
           loadGuests();
         });
 
