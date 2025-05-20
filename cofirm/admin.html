@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>עמוד ניהול - אישורי הגעה</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>">
+    <title>עמוד התחברות - בר מצווה עמית</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
     <style>
         /* העיצוב (CSS) מוטמע כאן */
         body {
@@ -16,10 +16,10 @@
         }
 
         .container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 500px;
+            margin: 100px auto;
             background-color: #fff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -27,14 +27,59 @@
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        /* סגנון הטבלה */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #0069d9;
+        }
+
+        .error-message {
+            color: #E01628;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* סגנון עבור עמוד ניהול אישורי הגעה */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            display: none;
         }
 
         th, td {
@@ -56,8 +101,7 @@
             background-color: #e9e9e9;
         }
 
-        /* סגנון לסטטוס ההגעה - מיושם על הטקסט בתוך התא */
-        /* שמות הקלאסים מותאמים לערכים בעברית עם החלפת רווחים/לוכסנים במקפים */
+        /* סגנון לסטטוס ההגעה */
         .current-status-text.status-מגיע-ה {
             color: #4BF370; /* צבע ירוק */
         }
@@ -66,26 +110,27 @@
             color: #E01628; /* צבע אדום */
         }
 
-        /* סגנון להודעות מצב (טעינה, שגיאה, אין נתונים) */
+        /* סגנון להודעות מצב */
         #statusMessage {
             text-align: center;
             margin-top: 20px;
             font-weight: bold;
-            color: #555; /* צבע ברירת מחדל לאפור */
+            color: #555;
+            display: none;
         }
         #statusMessage.error {
-            color: red; /* צבע אדום לשגיאה */
+            color: red;
         }
-         #statusMessage.loading {
-            color: blue; /* צבע כחול לטעינה */
+        #statusMessage.loading {
+            color: blue;
         }
 
         /* סגנון לכפתורי הסטטוס בתוך התא */
         .status-buttons-container {
-            display: flex; /* כדי שהאלמנטים יהיו בשורה */
-            align-items: center; /* ליישור אנכי למרכז */
-            gap: 10px; /* מרווח בין האלמנטים */
-            flex-wrap: wrap; /* מעבר שורה אם אין מספיק מקום */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .status-btn {
@@ -97,8 +142,8 @@
         }
 
         .attend-btn {
-            background-color: #d4edda; /* Light green */
-            color: #155724; /* Dark green */
+            background-color: #d4edda;
+            color: #155724;
             border: 1px solid #c3e6cb;
         }
 
@@ -107,8 +152,8 @@
         }
 
         .not-attend-btn {
-            background-color: #f8d7da; /* Light red */
-            color: #721c24; /* Dark red */
+            background-color: #f8d7da;
+            color: #721c24;
             border: 1px solid #f5c6cb;
         }
 
@@ -121,25 +166,21 @@
             cursor: not-allowed;
         }
 
-         /* Style for the status text within the cell */
         .current-status-text {
-             font-weight: bold; /* הטקסט יהיה מודגש */
-             min-width: 80px; /* הגדלת הרוחב המינימלי ליתר ביטחון בגלל הטקסט הארוך יותר */
-             text-align: center; /* מרכוז הטקסט */
-             /* הצבע מוגדר בקלאסים הספציפיים למעלה */
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
         }
 
-        /* סגנון לקישורי המייל */
         td a {
-            color: #007bff; /* צבע כחול סטנדרטי לקישור */
-            text-decoration: none; /* הסרת קו תחתון */
+            color: #007bff;
+            text-decoration: none;
         }
 
         td a:hover {
-            text-decoration: underline; /* הוספת קו תחתון בריחוף */
+            text-decoration: underline;
         }
 
-        /* הוספת סגנון לאייקון הטעינה */
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -155,7 +196,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* סטייל לחיווי שליחת מייל */
         .email-status {
             font-size: 0.85em;
             margin-left: 10px;
@@ -178,14 +218,50 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        #logout-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+
+        #logout-btn:hover {
+            background-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>רשימת אישורי הגעה</h1>
+    <!-- דף כניסה -->
+    <div id="login-container" class="container">
+        <h1>כניסה למערכת ניהול אישורי הגעה</h1>
+        <div id="login-form">
+            <div class="form-group">
+                <label for="username">שם משתמש:</label>
+                <input type="text" id="username" value="Amit Matyas">
+            </div>
+            <div class="form-group">
+                <label for="password">סיסמה:</label>
+                <input type="password" id="password">
+            </div>
+            <button id="login-button">התחבר</button>
+            <div id="error-message" class="error-message">שם משתמש או סיסמה שגויים</div>
+        </div>
+    </div>
 
+    <!-- עמוד ניהול אישורי הגעה (יוצג לאחר כניסה מוצלחת) -->
+    <div id="admin-container" class="container" style="display: none; max-width: 800px;">
+        <button id="logout-btn">התנתק</button>
+        <h1>רשימת אישורי הגעה</h1>
         <div id="statusMessage">טוען נתונים...</div>
-        <table id="attendeesTable" style="display: none;">
+        <table id="attendeesTable">
             <thead>
                 <tr>
                     <th>שם</th>
@@ -200,21 +276,104 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <!-- עדכון ל-EmailJS v4 -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script>
-        // אתחול EmailJS עם הגרסה החדשה
+        // אתחול EmailJS
         (function() {
             emailjs.init({
-                publicKey: "xMUcc8A1COpyd1SSY", // מפתח ציבורי שסופק
-                blockHeadless: false, // אפשור שימוש בסביבת פיתוח/בדיקות
-                limitRate: true // הגבלת קצב שליחה למניעת שימוש לרעה
+                publicKey: "xMUcc8A1COpyd1SSY",
+                blockHeadless: false,
+                limitRate: true
             });
             console.log("EmailJS v4 initialized");
         })();
 
-        // פונקציה משופרת לשליחת מייל למוזמן
+        // הגדרות Firebase
+        const firebaseConfig = {
+             apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
+             authDomain: "tester-69fa9.firebaseapp.com",
+             projectId: "tester-69fa9",
+             storageBucket: "tester-69fa9.firebasestorage.app",
+             messagingSenderId: "378563229004",
+             appId: "1:378563229004:web:5136b724eb84fd00e44be9",
+             measurementId: "G-BFJ1QQM3MS"
+        };
+
+        // שם הקולקשן ב-Firestore
+        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees';
+
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // קבלת הפניות לאלמנטים בדף
+        const loginContainer = document.getElementById('login-container');
+        const adminContainer = document.getElementById('admin-container');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('login-button');
+        const errorMessage = document.getElementById('error-message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const attendeesTable = document.getElementById('attendeesTable');
+        const attendeesTableBody = document.getElementById('attendeesTableBody');
+        const statusMessageDiv = document.getElementById('statusMessage');
+
+        // פונקציה לאימות כניסה
+        function validateLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            // בדיקת שם משתמש וסיסמה
+            if (username === "Amit Matyas" && password === "AmitMatyas@2012") {
+                // כניסה מוצלחת
+                loginContainer.style.display = 'none';
+                adminContainer.style.display = 'block';
+                logoutBtn.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // שינוי כותרת וfavicon לאחר כניסה מוצלחת
+                document.title = "עמוד ניהול - אישורי הגעה";
+                document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>";
+                
+                // טעינת נתוני אישורי הגעה
+                loadAttendees();
+                
+                return true;
+            } else {
+                // כניסה נכשלה
+                errorMessage.style.display = 'block';
+                passwordInput.value = '';
+                return false;
+            }
+        }
+
+        // פונקציה ליציאה מהמערכת
+        function logout() {
+            loginContainer.style.display = 'block';
+            adminContainer.style.display = 'none';
+            logoutBtn.style.display = 'none';
+            passwordInput.value = '';
+            errorMessage.style.display = 'none';
+            
+            // החזרת כותרת וfavicon למצב הראשוני
+            document.title = "עמוד התחברות - בר מצווה עמית";
+            document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>";
+        }
+
+        // הוספת מאזיני אירועים לכפתורים
+        loginButton.addEventListener('click', validateLogin);
+        logoutBtn.addEventListener('click', logout);
+
+        // הוספת אפשרות להתחבר באמצעות לחיצה על Enter
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                validateLogin();
+            }
+        });
+
+        // פונקציה לשליחת מייל למוזמן
         async function sendEmailToGuest(email, guestName, statusElement) {
             try {
                 // הצגת אינדיקטור שליחה
@@ -226,16 +385,16 @@
 
                 // הכנת נתונים לשליחה
                 const templateParams = {
-                    to_email: email,     // אימייל היעד
-                    guest_name: guestName, // שם האורח לשימוש בתבנית
-                    to_name: guestName,   // פרמטר שימושי נוסף לתבנית
-                    from_name: "בר מצווה", // מי שולח את המייל
-                    reply_to: "no-reply@example.com" // אימייל לתשובה
+                    to_email: email,
+                    guest_name: guestName,
+                    to_name: guestName,
+                    from_name: "בר מצווה",
+                    reply_to: "no-reply@example.com"
                 };
                 
                 console.log("Sending email with params:", JSON.stringify(templateParams));
                 
-                // שליחת המייל באמצעות EmailJS גרסה 4
+                // שליחת המייל באמצעות EmailJS
                 const response = await emailjs.send("service_laxsrg8", "barmizzva", templateParams);
                 
                 console.log("SUCCESS! Email sent to:", email, response.status, response.text);
@@ -258,37 +417,13 @@
             }
         }
 
-        // --- הגדרות Firebase שלך ---
-        const firebaseConfig = {
-             apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
-             authDomain: "tester-69fa9.firebaseapp.com",
-             projectId: "tester-69fa9",
-             storageBucket: "tester-69fa9.firebasestorage.app",
-             messagingSenderId: "378563229004",
-             appId: "1:378563229004:web:5136b724eb84fd00e44be9",
-             measurementId: "G-BFJ1QQM3MS"
-        };
-
-        // שם הקולקשן (אוסף) ב-Firestore שבו נשמרים הנתונים
-        const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees';
-
-        // אתחול Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(); // קבלת התייחסות ל-Firestore
-
-        // קבלת הפניות לאלמנטים בטבלה ובהודעת הסטטוס
-        const attendeesTable = document.getElementById('attendeesTable');
-        const attendeesTableBody = document.getElementById('attendeesTableBody');
-        const statusMessageDiv = document.getElementById('statusMessage');
-
-        // פונקציה לייצר שם קלאס תקין מסטטוס ההגעה (מחליף רווחים ולוכסנים במקפים)
+        // פונקציה לייצר שם קלאס תקין מסטטוס ההגעה
         function getStatusClass(statusString) {
-             if (!statusString) return ''; // טיפול במקרה של סטטוס ריק או null
-             // החלף רווחים ולוכסנים במקפים גלובלית
+             if (!statusString) return '';
              return 'status-' + statusString.replace(/[\s/]/g, '-');
         }
 
-        // פונקציה לעדכון סטטוס ההגעה ב-Firestore ובעדכון התצוגה בשורה הספציפית
+        // פונקציה לעדכון סטטוס ההגעה
         async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
             // מצא את הכפתורים בשורה ונטרל אותם בזמן העדכון
             const buttons = rowElement.querySelectorAll('.status-btn');
@@ -298,7 +433,6 @@
                 // עדכון המסמך ב-Firestore
                 await db.collection(FIRESTORE_COLLECTION_NAME).doc(attendeeId).update({
                     attendance: newStatus,
-                    // הוספת חותמת זמן לעדכון
                     updated_at: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
@@ -317,76 +451,74 @@
                 return true;
             } catch (error) {
                 console.error(`Error updating status for ${attendeeId}: `, error);
-                alert(`שגיאה בעדכון הסטטוס: ${error.message}`); // הצגת הודעת שגיאה למשתמש
+                alert(`שגיאה בעדכון הסטטוס: ${error.message}`);
                 return false;
             } finally {
-                // הפעל מחדש את הכפתורים לאחר סיום העדכון (הצלחה או כישלון)
+                // הפעל מחדש את הכפתורים לאחר סיום העדכון
                 buttons.forEach(btn => btn.disabled = false);
             }
         }
 
         // פונקציה להצגת הנתונים בטבלה
         function displayAttendees(attendees) {
-            attendeesTableBody.innerHTML = ''; // נקה תוכן קודם
+            attendeesTableBody.innerHTML = '';
 
             if (attendees.length === 0) {
                 statusMessageDiv.textContent = 'אין אישורי הגעה עדיין.';
-                statusMessageDiv.className = 'statusMessage'; // ברירת מחדל אפור
-                attendeesTable.style.display = 'none'; // הסתר טבלה
-                statusMessageDiv.style.display = 'block'; // הצג הודעה
+                statusMessageDiv.className = 'statusMessage';
+                attendeesTable.style.display = 'none';
+                statusMessageDiv.style.display = 'block';
                 return;
             }
 
             // הצג טבלה והסתר הודעה
-            attendeesTable.style.display = 'table'; // הצג טבלה
-            statusMessageDiv.style.display = 'none'; // הסתר הודעה
+            attendeesTable.style.display = 'table';
+            statusMessageDiv.style.display = 'none';
 
             // יצירת שורות הטבלה מנתוני המשתתפים
             attendees.forEach(attendee => {
-                const row = attendeesTableBody.insertRow(); // הוספת שורה חדשה לטבלה
-                // השתמש ב-attendee.id (שהוא האימייל לפי המיפוי) בתור data attribute
+                const row = attendeesTableBody.insertRow();
                 row.dataset.id = attendee.id;
 
                 // הוספת תאים לשורה
                 const nameCell = row.insertCell(0);
-                const emailCell = row.insertCell(1); // תא זה יכיל את קישור המייל
-                const attendanceCell = row.insertCell(2); // תא זה יכיל גם את הטקסט וגם את הכפתורים
+                const emailCell = row.insertCell(1);
+                const attendanceCell = row.insertCell(2);
 
                 // הכנסת הנתונים לתאים
-                nameCell.textContent = attendee.full_name; // מציג את השם המלא שקיים בנתונים
+                nameCell.textContent = attendee.full_name;
 
                 // יצירת קישור mailto עבור כתובת האימייל
                 const emailLink = document.createElement('a');
                 emailLink.href = 'mailto:' + attendee.email;
                 emailLink.textContent = attendee.email;
-                emailCell.appendChild(emailLink); // הוספת הקישור לתא האימייל
+                emailCell.appendChild(emailLink);
 
                 // יצירת אלמנטים לתא הסטטוס והכפתורים
                 const statusContainer = document.createElement('div');
-                statusContainer.classList.add('status-buttons-container'); // קלאס לסגנון flex
+                statusContainer.classList.add('status-buttons-container');
 
                 const statusTextSpan = document.createElement('span');
-                statusTextSpan.classList.add('current-status-text'); // קלאס לטקסט הסטטוס
-                statusTextSpan.textContent = attendee.attendance || 'לא ידוע'; // טיפול במקרה של ערך ריק
-                // הוספת קלאס הצבע לספאן בהתאם לסטטוס הנוכחי
+                statusTextSpan.classList.add('current-status-text');
+                statusTextSpan.textContent = attendee.attendance || 'לא ידוע';
                 statusTextSpan.classList.add(getStatusClass(attendee.attendance));
 
                 const attendBtn = document.createElement('button');
-                attendBtn.textContent = 'מגיע/ה'; // כיתוב מלא
-                attendBtn.classList.add('status-btn', 'attend-btn'); // קלאסים לסגנון
-                attendBtn.dataset.id = attendee.id; // שמירת ה-ID בכפתור
-                attendBtn.dataset.status = 'מגיע/ה'; // שמירת הסטטוס המלא שהכפתור מייצג
+                attendBtn.textContent = 'מגיע/ה';
+                attendBtn.classList.add('status-btn', 'attend-btn');
+                attendBtn.dataset.id = attendee.id;
+                attendBtn.dataset.status = 'מגיע/ה';
 
                 const notAttendBtn = document.createElement('button');
-                notAttendBtn.textContent = 'לא מגיע/ה'; // כיתוב מלא
-                notAttendBtn.classList.add('status-btn', 'not-attend-btn'); // קלאסים לסגנון
-                notAttendBtn.dataset.id = attendee.id; // שמירת ה-ID בכפתור
-                notAttendBtn.dataset.status = 'לא מגיע/ה'; // שמירת הסטטוס המלא שהכפתור מייצג
+                notAttendBtn.textContent = 'לא מגיע/ה';
+                notAttendBtn.classList.add('status-btn', 'not-attend-btn');
+                notAttendBtn.dataset.id = attendee.id;
+                notAttendBtn.dataset.status = 'לא מגיע/ה';
 
                 // יצירת אלמנט לחיווי סטטוס שליחת המייל
                 const emailStatusSpan = document.createElement('span');
                 emailStatusSpan.classList.add('email-status');
-                emailStatusSpan.style.display = 'none'; // מוסתר בהתחלה
+                emailStatusSpan.style.display = 'none';
 
                 // הוספת האלמנטים לתא הסטטוס
                 statusContainer.appendChild(statusTextSpan);
@@ -398,24 +530,23 @@
                 // הוספת מאזיני אירועים לכפתורים
                 attendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
-                    const status = event.target.dataset.status; // יכיל 'מגיע/ה'
+                    const status = event.target.dataset.status;
                     
                     // עדכון הסטטוס בפיירבייס
                     const updateSuccess = await updateAttendanceStatus(id, status, row);
                     
                     // אם העדכון הצליח, שלח מייל למוזמן
                     if (updateSuccess) {
-                        const guestName = row.cells[0].textContent; // שם האורח מהתא הראשון בשורה
-                        const guestEmail = row.cells[1].querySelector('a').textContent; // כתובת המייל מהתא השני
+                        const guestName = row.cells[0].textContent;
+                        const guestEmail = row.cells[1].querySelector('a').textContent;
                         sendEmailToGuest(guestEmail, guestName, emailStatusSpan);
                     }
                 });
 
                 notAttendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
-                    const status = event.target.dataset.status; // יכיל 'לא מגיע/ה'
-                    await updateAttendanceStatus(id, status, row); // קריאה לפונקציית העדכון והעברת אלמנט השורה
-                    // לא שולחים מייל אוטומטית למי שלא מגיע, רק מעדכנים סטטוס
+                    const status = event.target.dataset.status;
+                    await updateAttendanceStatus(id, status, row);
                 });
             });
         }
@@ -423,50 +554,29 @@
         // פונקציה לטעינת נתונים מ-Firestore
         async function loadAttendees() {
             statusMessageDiv.innerHTML = '<div class="loading-spinner"></div> טוען נתונים...';
-            statusMessageDiv.className = 'statusMessage loading'; // צבע כחול לטעינה
-            statusMessageDiv.style.display = 'block'; // הצג הודעה
-            attendeesTable.style.display = 'none'; // הסתר טבלה בזמן טעינה
+            statusMessageDiv.className = 'statusMessage loading';
+            statusMessageDiv.style.display = 'block';
+            attendeesTable.style.display = 'none';
 
             try {
-                // קבלת כל המסמכים מהקולקשן, ממוינים לפי חותמת הזמן (מהחדש לישן)
                 const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
-                                             .orderBy('timestamp', 'desc') // מיון מהחדש לישן
-                                             .get(); // קבלת snapshot של כל המסמכים
+                                         .orderBy('timestamp', 'desc')
+                                         .get();
 
-                // המרת הנתונים לפורמט נוח (מערך של אובייקטים)
                 const attendees = snapshot.docs.map(doc => ({
-                    id: doc.id, // הוספת ה-ID של המסמך (במקרה זה, זה האימייל)
-                    ...doc.data() // הוספת שאר הנתונים מהמסמך
+                    id: doc.id,
+                    ...doc.data()
                 }));
 
-                // הצגת הנתונים בטבלה
                 displayAttendees(attendees);
 
             } catch (error) {
                 console.error("Error fetching documents: ", error);
-                // הצגת הודעת שגיאה
                 statusMessageDiv.textContent = `שגיאה בשליפת הנתונים: ${error.message}`;
-                statusMessageDiv.className = 'statusMessage error'; // צבע אדום לשגיאה
-                attendeesTable.style.display = 'none'; // וודא שהטבלה מוסתרת במקרה שגיאה חמורה
+                statusMessageDiv.className = 'statusMessage error';
+                attendeesTable.style.display = 'none';
             }
         }
-
-        // טעינת הנתונים כאשר העמוד נטען במלואו
-        window.addEventListener('load', loadAttendees);
-
-        // אופציונלי: האזנה לשינויים בזמן אמת (מפעילים בהערה כדי לא לגרום לבלבול)
-        /*
-        db.collection(FIRESTORE_COLLECTION_NAME).orderBy('timestamp', 'desc')
-             .onSnapshot(snapshot => {
-                 const attendees = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                 displayAttendees(attendees); // onSnapshot יקרא ל-displayAttendees בכל שינוי
-             }, error => {
-                 console.error("Error listening for changes: ", error);
-                 statusMessageDiv.textContent = `שגיאה בהאזנה לשינויים: ${error.message}`;
-                 statusMessageDiv.className = 'statusMessage error';
-                 attendeesTable.style.display = 'none'; // הסתר טבלה במקרה שגיאה חמורה
-             });
-        */
     </script>
 </body>
 </html>
