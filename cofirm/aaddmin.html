@@ -387,7 +387,7 @@
         async function sendEmailToGuest(email, guestName, statusElement, templateId = "barmizzva", customText = null) {
             // וודא ש-EmailJS מאותחל לפני ניסיון שליחה
             if (typeof emailjs === 'undefined' || !emailjs.send) {
-                console.error("EmailJS is not initialized. Cannot send email.");
+                console.error("EmailJS library not loaded or initialized correctly.");
                 if (statusElement) {
                     statusElement.textContent = "שגיאה: EmailJS לא מאותחל.";
                     statusElement.className = "email-status error";
@@ -405,6 +405,7 @@
                     statusElement.className = "email-status error";
                     statusElement.style.display = "inline-block";
                 } else {
+                    // הצגה רק אם אין אלמנט סטטוס ספציפי (לדוגמה, כאשר נשלח מייל בודד ולא חלק מהגורף)
                     alert(`שגיאה: לא ניתן לשלוח מייל ל-${guestName} - כתובת האימייל ריקה או לא תקינה.`);
                 }
                 return false;
@@ -457,9 +458,9 @@
             }
         }
         
-        // פונקציה לשליחת מייל עדכון לכל האורחים המגיעים
-        async function sendBulkEmailToAttendees() {
-            const customText = bulkEmailTextInput.value.trim(); // קבלת הטקסט מתיבת הטקסט
+        // פונקציה שמציגה רשימת אורחים לפני שליחת מייל גורף
+        async function confirmAndSendBulkEmail() {
+            const customText = bulkEmailTextInput.value.trim();
             
             if (!customText) {
                 bulkEmailStatusElement.textContent = "אנא הזן/הזיני טקסט לעדכון לפני השליחה.";
@@ -473,7 +474,6 @@
             bulkEmailStatusElement.style.color = "#0056b3";
             
             try {
-                // קבלת רשימת כל האורחים שסומנו כמגיעים
                 const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
                                          .where('attendance', '==', 'מגיע/ה')
                                          .get();
@@ -490,56 +490,93 @@
                     return;
                 }
                 
-                bulkEmailStatusElement.textContent = `שולח עדכון ל-${attendingGuests.length} אורחים...`;
+                // בונה את הודעת האישור עם רשימת השמות והמיילים
+                let confirmationMessage = `האם אתה בטוח/ה שברצונך לשלוח את העדכון הבא ל-${attendingGuests.length} אורחים המסומנים כ'מגיע/ה'?\n\n`;
+                confirmationMessage += `הודעה: "${customText}"\n\n`;
+                confirmationMessage += "רשימת נמענים:\n";
                 
-                // מונה לשליחות מוצלחות וכישלונות
-                let successCount = 0;
-                let failCount = 0;
-                
-                // שליחת מייל לכל אורח ברשימה
-                for (const guest of attendingGuests) {
-                    // **בדיקה קריטית: וודא שכתובת המייל קיימת ואינה ריקה**
+                let validRecipientsCount = 0;
+                attendingGuests.forEach(guest => {
+                    // מוסיף לרשימה רק אורחים עם מייל תקין
                     if (guest.email && guest.email.trim() !== "" && guest.email.includes('@') && guest.email.includes('.')) {
-                        try {
-                            await sendEmailToGuest(
-                                guest.email, 
-                                guest.full_name, 
-                                null, // אין אלמנט סטטוס ספציפי לכל שורה
-                                "barmizzvaupdate", // התבנית החדשה
-                                customText // הטקסט המותאם אישית
-                            );
-                            successCount++;
-                            bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
-                        } catch (err) {
-                            console.error(`שגיאה בשליחת מייל ל-${guest.full_name} (${guest.email}):`, err);
-                            failCount++;
-                            bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
-                        }
+                        confirmationMessage += `- ${guest.full_name} (${guest.email})\n`;
+                        validRecipientsCount++;
                     } else {
-                        console.warn(`מדלג על שליחת מייל ל-${guest.full_name} עקב כתובת אימייל חסרה או לא תקינה: '${guest.email}'.`);
-                        failCount++;
+                        confirmationMessage += `- ${guest.full_name} (כתובת אימייל לא תקינה/חסרה)\n`;
                     }
+                });
+
+                if (validRecipientsCount === 0) {
+                     bulkEmailStatusElement.textContent = "לא נמצאו נמענים עם כתובת אימייל תקינה.";
+                     bulkEmailStatusElement.style.color = "#dc3545";
+                     sendBulkEmailBtn.disabled = false;
+                     return;
                 }
-                
-                bulkEmailStatusElement.textContent = `השליחה הסתיימה: ${successCount} מיילים נשלחו בהצלחה, ${failCount} נכשלו.`;
-                if (failCount === 0) {
-                    bulkEmailStatusElement.style.color = "#28a745"; // ירוק אם הכל הצליח
+
+                confirmationMessage += `\nסה"כ נמענים תקינים: ${validRecipientsCount}. לחץ 'אישור' כדי לשלוח, או 'ביטול' כדי לבטל.`;
+
+                // מציג את חלון האישור
+                const userConfirmed = confirm(confirmationMessage);
+
+                if (userConfirmed) {
+                    // אם המשתמש אישר, קורא לפונקציית השליחה בפועל
+                    await sendBulkEmailToAttendees(customText, attendingGuests);
                 } else {
-                    bulkEmailStatusElement.style.color = "#ffc107"; // צהוב אם יש כישלונות
+                    // אם המשתמש ביטל
+                    bulkEmailStatusElement.textContent = "שליחת העדכון בוטלה על ידי המשתמש.";
+                    bulkEmailStatusElement.style.color = "#ffc107"; // צהוב
                 }
                 
             } catch (error) {
-                console.error("שגיאה בשליחת מיילים גורפת:", error);
-                bulkEmailStatusElement.textContent = `שגיאה בשליחת המיילים: ${error.message}`;
+                console.error("שגיאה בהכנת רשימת נמענים:", error);
+                bulkEmailStatusElement.textContent = `שגיאה בהכנת הרשימה: ${error.message}`;
                 bulkEmailStatusElement.style.color = "#dc3545";
             } finally {
-                // הפעלה מחדש של כפתור השליחה
-                sendBulkEmailBtn.disabled = false;
+                sendBulkEmailBtn.disabled = false; // הפעל מחדש את הכפתור בכל מקרה
             }
         }
 
-        // הוספת מאזין אירועים לכפתור "שלח עדכון לכל המגיעים"
-        sendBulkEmailBtn.addEventListener('click', sendBulkEmailToAttendees);
+        // פונקציה לשליחת מייל עדכון לכל האורחים המגיעים (פונקציה פנימית הנקראת לאחר אישור)
+        async function sendBulkEmailToAttendees(customText, attendingGuests) {
+            bulkEmailStatusElement.textContent = `שולח עדכון ל-${attendingGuests.length} אורחים...`;
+            bulkEmailStatusElement.style.color = "#0056b3";
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const guest of attendingGuests) {
+                if (guest.email && guest.email.trim() !== "" && guest.email.includes('@') && guest.email.includes('.')) {
+                    try {
+                        await sendEmailToGuest(
+                            guest.email, 
+                            guest.full_name, 
+                            null, 
+                            "barmizzvaupdate", 
+                            customText 
+                        );
+                        successCount++;
+                        bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
+                    } catch (err) {
+                        console.error(`שגיאה בשליחת מייל ל-${guest.full_name} (${guest.email}):`, err);
+                        failCount++;
+                        bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
+                    }
+                } else {
+                    console.warn(`מדלג על שליחת מייל ל-${guest.full_name} עקב כתובת אימייל חסרה או לא תקינה: '${guest.email}'.`);
+                    failCount++;
+                }
+            }
+            
+            bulkEmailStatusElement.textContent = `השליחה הסתיימה: ${successCount} מיילים נשלחו בהצלחה, ${failCount} נכשלו.`;
+            if (failCount === 0) {
+                bulkEmailStatusElement.style.color = "#28a745";
+            } else {
+                bulkEmailStatusElement.style.color = "#ffc107";
+            }
+        }
+
+        // שינוי: הוספת מאזין אירועים לכפתור "שלח עדכון לכל המגיעים" שיקרא לפונקציה החדשה
+        sendBulkEmailBtn.addEventListener('click', confirmAndSendBulkEmail);
 
         // פונקציה לייצר שם קלאס תקין מסטטוס ההגעה
         function getStatusClass(statusString) {
