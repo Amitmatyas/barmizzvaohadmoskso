@@ -1,117 +1,163 @@
 <!DOCTYPE html>
 <html lang="he">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>אישור הגעה</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    li {
-      background: #fff;
-      margin-bottom: 10px;
-      padding: 15px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    button {
-      padding: 8px 12px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <h1>אישור הגעה לאירוע</h1>
-  <ul id="guest-list"></ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>בר מצווה לעמית</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+      emailjs.init("xMUcc8A1COpyd1SSY"); // שמור על ה-ID שלך
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        direction: rtl;
+      }
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      doc,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import emailjs from "https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js";
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+      }
 
-    emailjs.init("xMUcc8A1COpyd1SSY"); // public key שלך
+      th,
+      td {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+      }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBoogKjvubRXtKLDz9FzL5X27yAWqFvFME",
-      authDomain: "bar-mitzva-amit.firebaseapp.com",
-      projectId: "bar-mitzva-amit",
-      storageBucket: "bar-mitzva-amit.appspot.com",
-      messagingSenderId: "55047681548",
-      appId: "1:55047681548:web:7c1d735dcf94ec19e9c4fb"
-    };
+      th {
+        background-color: #f2f2f2;
+      }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+      button {
+        padding: 0.5rem 1rem;
+        margin: 0.2rem;
+        cursor: pointer;
+        background-color: #e0e0e0;
+        border: none;
+        border-radius: 5px;
+      }
 
-    async function loadGuests() {
-      const querySnapshot = await getDocs(collection(db, "guests"));
-      const list = document.getElementById("guest-list");
-      list.innerHTML = "";
+      .status-מגיע-ה {
+        color: green;
+        font-weight: bold;
+      }
 
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const li = document.createElement("li");
+      .status-לא-מגיע-ה {
+        color: red;
+        font-weight: bold;
+      }
 
-        li.innerHTML = `
-          <span>${data.name} - ${data.status === "yes" ? "מגיע/ה" : "לא בטוח/לא מגיע/ה"}</span>
-          <button>${data.status === "yes" ? "לא מגיע/ה" : "מגיע/ה"}</button>
-        `;
+      .status-לא-ענה {
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>בר מצווה לעמית</h1>
+    <table id="guestsTable">
+      <thead>
+        <tr>
+          <th>שם</th>
+          <th>סטטוס</th>
+          <th>אימייל</th>
+          <th>פעולה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-        li.querySelector("button").addEventListener("click", async () => {
-          const newStatus = data.status === "yes" ? "no" : "yes";
-          await updateDoc(doc(db, "guests", docSnap.id), {
-            status: newStatus
-          });
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAHtzbKXHugX3v2FSZL9MR-DWvncoAeM78",
+        authDomain: "bar-mitzva-amit.firebaseapp.com",
+        projectId: "bar-mitzva-amit",
+        storageBucket: "bar-mitzva-amit.appspot.com",
+        messagingSenderId: "786757592859",
+        appId: "1:786757592859:web:fa55b4604a2e0d78fcebbf",
+      };
 
-          // === שליחת מייל דרך EmailJS ===
-          emailjs.send("service_laxsrg8", "barmizzva", {
-            guest_name: data.name
-          })
-          .then(() => {
-            console.log("email sent to", data.name);
-          })
-          .catch((error) => {
-            console.error("emailjs error:", error);
-          });
-          // ==============================
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
 
-          loadGuests();
+      function getStatusClass(status) {
+        if (status === "מגיע/ה") return "status-מגיע-ה";
+        if (status === "לא מגיע/ה") return "status-לא-מגיע-ה";
+        return "status-לא-ענה";
+      }
+
+      function createRow(attendee) {
+        const tr = document.createElement("tr");
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = attendee.full_name;
+        tr.appendChild(nameTd);
+
+        const statusTd = document.createElement("td");
+        const statusText = document.createElement("span");
+        statusText.textContent = attendee.attendance || "לא ענה";
+        statusText.className = getStatusClass(attendee.attendance);
+        statusTd.appendChild(statusText);
+        tr.appendChild(statusTd);
+
+        const emailTd = document.createElement("td");
+        emailTd.textContent = attendee.email || "";
+        tr.appendChild(emailTd);
+
+        const actionsTd = document.createElement("td");
+
+        ["מגיע/ה", "לא מגיע/ה"].forEach((status) => {
+          const btn = document.createElement("button");
+          btn.textContent = status;
+          btn.onclick = () => {
+            db.collection("invitees")
+              .doc(attendee.id)
+              .update({ attendance: status })
+              .then(() => {
+                statusText.textContent = status;
+                statusText.className = getStatusClass(status);
+
+                // רק אם נבחר "מגיע/ה" שולחים מייל
+                if (status === "מגיע/ה") {
+                  emailjs
+                    .send("service_laxsrg8", "barmizzva", {
+                      guest_name: attendee.full_name,
+                      status: status,
+                      email: attendee.email,
+                    })
+                    .then(() => {
+                      console.log("Email sent to", attendee.email);
+                    })
+                    .catch((error) => {
+                      console.error("Email error", error);
+                    });
+                }
+              });
+          };
+          actionsTd.appendChild(btn);
         });
 
-        list.appendChild(li);
-      });
-    }
+        tr.appendChild(actionsTd);
+        return tr;
+      }
 
-    loadGuests();
-  </script>
-</body>
+      db.collection("invitees")
+        .get()
+        .then((querySnapshot) => {
+          const tbody = document.querySelector("#guestsTable tbody");
+          querySnapshot.forEach((doc) => {
+            const attendee = { id: doc.id, ...doc.data() };
+            const row = createRow(attendee);
+            tbody.appendChild(row);
+          });
+        });
+    </script>
+  </body>
 </html>
