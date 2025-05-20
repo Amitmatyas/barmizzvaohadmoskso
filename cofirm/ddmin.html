@@ -161,29 +161,45 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
 
     <script>
         // אתחול EmailJS
         (function() {
             emailjs.init("xMUcc8A1COpyd1SSY"); // מפתח ציבורי שסופק
+            console.log("EmailJS initialized");
         })();
 
         // פונקציה לשליחת מייל למוזמן
         function sendEmailToGuest(email, guestName) {
-            // הכנת נתונים לשליחה
-            const templateParams = {
-                guest_name: guestName, // שם האורח - תואם למשתנה בתבנית
-                email: email // כתובת האימייל של המוזמן
-            };
-            
-            // שליחת המייל באמצעות EmailJS
-            emailjs.send("service_laxsrg8", "barmizzva", templateParams)
-                .then(function(response) {
-                    console.log("SUCCESS! Email sent to:", email, response.status, response.text);
-                }, function(error) {
-                    console.error("FAILED to send email:", error);
-                });
+            try {
+                // הכנת נתונים לשליחה
+                const templateParams = {
+                    to_email: email,     // אימייל היעד
+                    guest_name: guestName, // שם האורח לשימוש בתבנית
+                    to_name: guestName,   // פרמטר שימושי נוסף לתבנית
+                    from_name: "בר מצווה", // מי שולח את המייל
+                    reply_to: "no-reply@example.com" // אימייל לתשובה
+                };
+                
+                console.log("Sending email with params:", JSON.stringify(templateParams));
+                
+                // שליחת המייל באמצעות EmailJS
+                emailjs.send("service_laxsrg8", "barmizzva", templateParams)
+                    .then(function(response) {
+                        console.log("SUCCESS! Email sent to:", email, response.status, response.text);
+                        // אופציונלי: הצגת הודעת הצלחה למשתמש
+                        alert(`מייל נשלח בהצלחה ל${guestName}`);
+                    })
+                    .catch(function(error) {
+                        console.error("FAILED to send email:", error);
+                        // אופציונלי: הצגת הודעת שגיאה למשתמש
+                        alert(`שגיאה בשליחת מייל: ${error.message || 'בדוק את הקונסול לפרטים נוספים'}`);
+                    });
+            } catch (err) {
+                console.error("Exception in sendEmailToGuest:", err);
+                alert("שגיאה בשליחת המייל, בדוק את הקונסול לפרטים נוספים");
+            }
         }
 
         // --- הגדרות Firebase שלך ---
