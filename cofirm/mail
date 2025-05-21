@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שליחת מייל ניסיון - עמית מטיאס</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            direction: rtl; /* יישור הטקסט מימין לשמאל לכל העמוד */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        label {
+            display: block;
+            text-align: right;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="email"],
+        input[type="text"],
+        textarea {
+            width: calc(100% - 22px); /* מלא רוחב בניכוי פדינג ובורדר */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box; /* כדי שהפדינג לא ירחיב את האלמנט */
+            text-align: right;
+        }
+        textarea {
+            resize: vertical; /* מאפשר שינוי גודל רק אנכית */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .note {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>שליחת מייל ניסיון</h2>
+        <form action="https://formsubmit.co/amitmatyas@gmail.com" method="POST">
+            
+            <input type="hidden" name="_subject" value="ניסיון">
+
+            <textarea name="תוכן_הודעה_HTML" style="display: none;">
+                <!DOCTYPE html>
+                <html lang="he" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>אישור הגעה</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+                </head>
+                <body style="margin: 0; padding: 0; background-color: #f8f8f8; font-family: 'Heebo', sans-serif;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="background-color: #f8f8f8;">
+                        <tr>
+                            <td align="center">
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; padding: 30px; font-family: 'Heebo', sans-serif; text-align: center;">
+                                    
+                                    <tr>
+                                        <td align="center" style="padding-bottom: 20px;">
+                                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #e9ecef; border-radius: 10px; padding: 20px;">
+                                                <tr>
+                                                    <td align="center">
+                                                        <h1 style="color: #3777b3; font-size: 26px; margin: 0;">🔔תזכורת🔔</h1>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="center" style="font-size: 18px; color: #333; padding: 20px 10px; font-family: 'Heebo', sans-serif;">
+                                            מחר האירוע, מצפה לראותך
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="center" style="padding: 10px 0 25px;">
+                                            <a href="https://calendar.google.com/" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; margin-bottom: 15px;">
+                                                <img src="https://i.imgur.com/CB9uybL.png" alt="לוח שנה" width="20" height="20" style="vertical-align: middle; margin-left: 10px;"> לפרטי האירוע
+                                            </a>
+                                            <br>
+                                            <a href="https://ul.waze.com/ul?place=ChIJI9v6Xni6HRURWebdUTrRLN8&ll=32.79366010%2C35.03827050&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" style="display: inline-block; background-color: #31CDFE; color: #ffffff; text-decoration: none; padding: 14px 20px; border-radius: 8px; font-size: 16px; font-weight: bold;">
+                                                <img src="https://i.imgur.com/wQ1rHtG.png" alt="Waze" width="20" height="20" style="vertical-align: middle; margin-left: 10px;"> ניווט למקום
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="center" style="padding: 10px 0 20px;">
+                                            <a href="https://payboxapp.page.link" target="_blank">
+                                                <img src="https://i.imgur.com/I7I07h7.png" width="80" alt="PayBox" style="border-radius: 8px;">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                        
+                                    <tr>
+                                        <td align="center" style="font-style: italic; font-size: 20px; color: #777; padding-top: 30px;">
+                                            מקווה לראותך,<br>עמית מטיאס
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+            </textarea>
+
+            <button type="submit">שלח מייל לעמית</button>
+        </form>
+        <p class="note">
+            לאחר הלחיצה, תופנה/י לדף אישור. בדוק/בדקי את תיבת הדואר הנכנס של amitmatyas@gmail.com
+            (וגם את תיקיית הספאם/קידומי מכירות) כדי לראות את המייל.
+        </p>
+    </div>
+</body>
+</html>
