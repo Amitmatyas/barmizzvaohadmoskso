@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>תזכורת אירוע</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <style>
+        body { font-family: Arial,sans-serif; background: #f7f7f7; direction: rtl;}
+        .container { background: #fff; max-width: 360px; margin: 40px auto; border-radius: 10px; box-shadow: 0 4px 16px #e1e1e1; padding: 30px 20px;}
+        h2 { color: #2d72d9; text-align: center; }
+        label { margin-top: 14px; display: block; color: #444;}
+        input, button { width: 100%; padding: 10px; margin: 8px 0 16px 0; border-radius: 6px; border: 1px solid #d0d0d0; font-size: 16px;}
+        button { background: #2d72d9; color: #fff; border: none; font-weight: bold; cursor: pointer;}
+        button:hover { background: #4497f7;}
+        .msg { margin-top: 8px; font-weight: bold;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>הגדר תזכורת לאירוע</h2>
+    <form id="reminderForm">
+        <label for="eventDateTime">תאריך ושעה של האירוע:</label>
+        <input type="datetime-local" id="eventDateTime" required>
+        <label for="email">אימייל:</label>
+        <input type="email" id="email" required>
+        <button type="submit">שמור/עדכן תזכורת</button>
+    </form>
+    <div class="msg" id="msg"></div>
+</div>
+<script>
+  // הכנס כאן את ה-config שלך מ-Firebase
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  document.getElementById("reminderForm").onsubmit = async function(e) {
+    e.preventDefault();
+    const eventDateTime = document.getElementById("eventDateTime").value;
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const msg = document.getElementById("msg");
+
+    if (!validateEmail(email)) {
+      msg.textContent = "האימייל לא תקין";
+      msg.style.color = "red";
+      return;
+    }
+    if (!eventDateTime || new Date(eventDateTime) < new Date()) {
+      msg.textContent = "יש לבחור תאריך עתידי";
+      msg.style.color = "red";
+      return;
+    }
+    const eventTS = new Date(eventDateTime).getTime();
+    const reminder24 = new Date(eventTS - 24*60*60*1000).toISOString();
+    const reminder2 = new Date(eventTS - 2*60*60*1000).toISOString();
+    try {
+      await db.collection("event_reminders").doc(email).set({
+        email,
+        eventDateTime,
+        reminder24,
+        reminder2,
+        sent24: false,
+        sent2: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      msg.textContent = "התזכורת נשמרה / עודכנה!";
+      msg.style.color = "green";
+      document.getElementById("reminderForm").reset();
+    } catch (err) {
+      msg.textContent = "שגיאה בשמירה";
+      msg.style.color = "red";
+    }
+  };
+
+  function validateEmail(email) {
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+  }
+</script>
+</body>
+</html>
