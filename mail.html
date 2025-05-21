@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MailerSend Email Button</title>
+  <style>
+    body {
+      background: #f2f5fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .mailer-container {
+      background: #fff;
+      padding: 40px 32px 32px 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+      text-align: center;
+      min-width: 340px;
+    }
+    h2 {
+      margin-bottom: 12px;
+      color: #2d3a4d;
+    }
+    #sendEmailBtn {
+      background: linear-gradient(90deg, #37a0fa 0%, #7f5fff 100%);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 14px 36px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px rgba(55, 160, 250, 0.12);
+    }
+    #sendEmailBtn:hover {
+      background: linear-gradient(90deg, #2c88d9 0%, #6d4fcb 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    #resultMsg {
+      margin-top: 24px;
+      font-size: 1em;
+      color: #2d3a4d;
+      min-height: 24px;
+      transition: color 0.3s;
+    }
+    #resultMsg.error {
+      color: #f44336;
+    }
+    #resultMsg.success {
+      color: #23b26d;
+    }
+  </style>
+</head>
+<body>
+  <div class="mailer-container">
+    <h2>שלח מייל עם MailerSend</h2>
+    <button id="sendEmailBtn">שלח מייל</button>
+    <div id="resultMsg"></div>
+  </div>
+  <script>
+    document.getElementById('sendEmailBtn').onclick = async function() {
+      const resultMsg = document.getElementById('resultMsg');
+      resultMsg.textContent = "שולח מייל...";
+      resultMsg.className = "";
+      try {
+        const response = await fetch('https://api.mailersend.com/v1/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Authorization': 'Bearer mlsn.1a75f3fd1e5431a8f780097d68e6b0c9692a1db91d43effc915b9038105b67e4'
+          },
+          body: JSON.stringify({
+            from: { email: "reminder@matyas.com" },
+            to: [ { email: "amitmatyas@yahoo.com" } ],
+            personalization: [{
+              email: "amitmatyas@yahoo.com",
+              data: { hours: "בעוד שעתיים" }
+            }],
+            template_id: "jpzkmgq8emmg059v"
+          })
+        });
+
+        if (response.ok) {
+          resultMsg.textContent = "המייל נשלח בהצלחה!";
+          resultMsg.className = "success";
+        } else {
+          const error = await response.json();
+          resultMsg.textContent = "שליחת המייל נכשלה: " + (error.message || response.status);
+          resultMsg.className = "error";
+        }
+      } catch (e) {
+        resultMsg.textContent = "שגיאה בשליחה: " + e.message;
+        resultMsg.className = "error";
+      }
+    };
+  </script>
+</body>
+</html>
