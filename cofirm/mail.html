@@ -1,189 +1,139 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>טופס שליחת מייל</title>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+    <title>תזכורת לאירוע</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            font-family: 'Heebo', sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Heebo', Arial, sans-serif;
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
             min-height: 100vh;
-            direction: rtl; /* יישור הטקסט מימין לשמאל לכל העמוד */
+            margin: 0;
+            direction: rtl;
         }
         .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
+            background: #fff;
+            margin: 60px auto;
+            max-width: 420px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            padding: 32px 28px 26px 28px;
         }
         h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 24px;
+            color: #e17055;
+            text-align: center;
+            font-weight: 700;
         }
         label {
             display: block;
-            text-align: right;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: bold;
+            margin: 20px 0 8px 0;
+            font-weight: 500;
+            color: #636e72;
         }
-        input[type="text"],
-        input[type="email"],
-        textarea {
-            width: calc(100% - 22px); /* מלא רוחב בניכוי פדינג ובורדר */
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        input, button {
+            width: 100%;
             font-size: 16px;
-            box-sizing: border-box; /* כדי שהפדינג לא ירחיב את האלמנט */
-            text-align: right;
-        }
-        textarea {
-            resize: vertical; /* מאפשר שינוי גודל רק אנכית */
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dfe6e9;
+            margin-bottom: 18px;
+            box-sizing: border-box;
         }
         button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 25px;
+            background: #e17055;
+            color: #fff;
             border: none;
-            border-radius: 5px;
-            font-size: 18px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background 0.2s;
         }
         button:hover {
-            background-color: #0056b3;
+            background: #fd9644;
         }
-        .note {
-            font-size: 14px;
-            color: #777;
-            margin-top: 20px;
+        .success {
+            color: #00b894;
+            font-weight: 600;
+            margin-top: 10px;
         }
-        .success-message {
-            color: #28a745;
-            font-weight: bold;
-            margin-top: 20px;
-            display: none; /* מוסתר כברירת מחדל */
+        .error {
+            color: #d63031;
+            font-weight: 600;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>טופס שליחת מייל ניסיון</h2>
-        <form id="emailForm" action="https://formsubmit.co/amitmatyas@gmail.com" method="POST">
-            
-            <input type="hidden" name="_subject" value="ניסיון שליחת מייל מעוצב">
+        <h2>הגדרת תזכורת לאירוע</h2>
+        <form id="reminderForm">
+            <label for="eventDateTime">תאריך ושעה של האירוע</label>
+            <input type="datetime-local" id="eventDateTime" required>
 
-            <label for="full_name">שם השולח (לדוגמה):</label>
-            <input type="text" id="full_name" name="שם_השולח" placeholder="הכנס/י את שמך" required>
+            <label for="email">אימייל לשליחת התזכורת</label>
+            <input type="email" id="email" placeholder="your@email.com" required>
 
-            <label for="sender_email">מייל השולח (תשמש ל'השב אל'):</label>
-            <input type="email" id="sender_email" name="מייל_השולח" placeholder="הכנס/י את המייל שלך" required>
-            
-            <input type="hidden" name="_replyto" id="reply_to_email">
-
-            <textarea name="תוכן_מייל_HTML" style="display: none;">
-                <!DOCTYPE html>
-                <html lang="he" dir="rtl">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>אישור הגעה</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
-                </head>
-                <body style="margin: 0; padding: 0; background-color: #f8f8f8; font-family: 'Heebo', sans-serif;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="background-color: #f8f8f8;">
-                        <tr>
-                            <td align="center">
-                                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; padding: 30px; font-family: 'Heebo', sans-serif; text-align: center;">
-                                    
-                                    <tr>
-                                        <td align="center" style="padding-bottom: 20px;">
-                                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #e9ecef; border-radius: 10px; padding: 20px;">
-                                                <tr>
-                                                    <td align="center">
-                                                        <h1 style="color: #3777b3; font-size: 26px; margin: 0;">🔔תזכורת🔔</h1>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td align="center" style="font-size: 18px; color: #333; padding: 20px 10px; font-family: 'Heebo', sans-serif;">
-                                            מחר האירוע, מצפה לראותך
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td align="center" style="padding: 10px 0 25px;">
-                                            <a href="https://calendar.google.com/" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; margin-bottom: 15px;">
-                                                <img src="https://i.imgur.com/CB9uybL.png" alt="לוח שנה" width="20" height="20" style="vertical-align: middle; margin-left: 10px;"> לפרטי האירוע
-                                            </a>
-                                            <br>
-                                            <a href="https://ul.waze.com/ul?place=ChIJI9v6Xni6HRURWebdUTrRLN8&ll=32.79366010%2C35.03827050&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" style="display: inline-block; background-color: #31CDFE; color: #ffffff; text-decoration: none; padding: 14px 20px; border-radius: 8px; font-size: 16px; font-weight: bold;">
-                                                <img src="https://i.imgur.com/wQ1rHtG.png" alt="Waze" width="20" height="20" style="vertical-align: middle; margin-left: 10px;"> ניווט למקום
-                                            </a>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td align="center" style="padding: 10px 0 20px;">
-                                            <a href="https://payboxapp.page.link" target="_blank">
-                                                <img src="https://i.imgur.com/I7I07h7.png" width="80" alt="PayBox" style="border-radius: 8px;">
-                                            </a>
-                                        </td>
-                                    </tr>
-                                        
-                                    <tr>
-                                        <td align="center" style="font-style: italic; font-size: 20px; color: #777; padding-top: 30px;">
-                                            מקווה לראותך,<br>עמית מטיאס
-                                        </td>
-                                    </tr>
-
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-                </html>
-            </textarea>
-
-            <button type="submit">שלח מייל</button>
+            <button type="submit">שמור ושלח תזכורות</button>
         </form>
-        <p class="note">
-            לאחר הלחיצה, תופנה/י לדף אישור של FormSubmit.
-            זכור/זכרי לאמת את כתובת המייל amitmatyas@gmail.com ב-FormSubmit.
-            המייל שתקבל/י יכלול את כל הפרטים ששלחת, כולל קוד ה-HTML המעוצב.
-        </p>
-        <div id="successMessage" class="success-message">
-            המייל נשלח בהצלחה!
-        </div>
+        <div id="msg"></div>
     </div>
+<script>
+async function sendMail(toEmail, hours) {
+    const token = 'PASTE_YOUR_MAILERSEND_TOKEN_HERE';
+    const template_id = 'jpzkmgq8emmg059v';
+    const fromEmail = 'reminder@matyas.com';
 
-    <script>
-        document.getElementById('emailForm').addEventListener('submit', function(event) {
-            // מעדכן את שדה ה-Reply-To להיות המייל שהוזן על ידי המשתמש
-            const senderEmail = document.getElementById('sender_email').value;
-            document.getElementById('reply_to_email').value = senderEmail;
+    return fetch("https://api.mailersend.com/v1/email", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            from: { email: fromEmail },
+            to: [{ email: toEmail }],
+            personalization: [{
+                email: toEmail,
+                data: { hours }
+            }],
+            template_id
+        })
+    })
+    .then(r=>r.json());
+}
 
-            // ניתן להציג הודעת הצלחה אם לא מפנים לדף אחר
-            // event.preventDefault(); // מונע את השליחה הרגילה של הטופס אם רוצים לטפל ב-JS
-            // document.getElementById('successMessage').style.display = 'block';
-            // setTimeout(() => {
-            //     document.getElementById('successMessage').style.display = 'none';
-            // }, 5000);
-        });
-    </script>
+function scheduleMail(to, eventTime, hoursBefore, hoursText) {
+    const msBefore = hoursBefore * 60 * 60 * 1000;
+    const now = Date.now();
+    const eventMs = (new Date(eventTime)).getTime();
+    const timeout = eventMs - msBefore - now;
+    if (timeout < 0) return; // זמן עבר, לא קובעים טיימר
+
+    setTimeout(()=>{
+        sendMail(to, hoursText)
+        .then(()=>console.log(`נשלחה תזכורת: ${hoursText}`))
+        .catch(()=>console.log("שגיאה בשליחת מייל"));
+    }, timeout);
+}
+
+document.getElementById("reminderForm").onsubmit = function(e){
+    e.preventDefault();
+    const eventDateTime = document.getElementById("eventDateTime").value;
+    const email = document.getElementById("email").value;
+    const msg = document.getElementById("msg");
+
+    if (!eventDateTime || !email) {
+        msg.innerHTML = '<div class="error">יש למלא את כל השדות</div>';
+        return;
+    }
+
+    // נשלח מיד אם יש טיימרים שעברו (לבדיקה/פיתוח)
+    // בפועל, בשרת אפשר לקבוע Job עתידי אמיתי!
+    scheduleMail(email, eventDateTime, 24, "מחר");
+    scheduleMail(email, eventDateTime, 2, "בעוד שעתיים");
+    msg.innerHTML = '<div class="success">התזכורות הוגדרו! אתה תקבל מייל "מחר" ו-"בעוד שעתיים" לפני האירוע.</div>';
+};
+</script>
 </body>
 </html>
