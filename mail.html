@@ -95,66 +95,18 @@
 <body>
   <div class="mailer-container">
     <h2>שלח מייל עם MailerSend</h2>
-    <form id="mailerForm" autocomplete="off">
-      <label for="fromEmail">מייל שולח</label>
-      <input type="email" id="fromEmail" name="fromEmail" required placeholder="your@email.com">
+<form name="contact" method="POST" data-netlify="true">
+  <label>שם:</label>
+  <input type="text" name="name" required>
+  
+  <label>אימייל:</label>
+  <input type="email" name="email" required>
+  
+  <label>משתנה:</label>
+  <input type="hours" name="hours" required>
 
-      <label for="toEmail">מייל נמען</label>
-      <input type="email" id="toEmail" name="toEmail" required placeholder="recipient@email.com">
-
-      <label for="hours">שעות (אופציונלי)</label>
-      <input type="text" id="hours" name="hours" placeholder="למשל: 15:00-17:00">
-
-      <label for="templateId">מספר תבנית</label>
-      <input type="text" id="templateId" name="templateId" required placeholder="template_id">
-
-      <button type="submit" id="sendEmailBtn">שלח מייל</button>
-    </form>
-    <div id="resultMsg"></div>
-  </div>
-  <script>
-    document.getElementById('mailerForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const resultMsg = document.getElementById('resultMsg');
-      resultMsg.textContent = "שולח מייל...";
-      resultMsg.className = "";
-
-      // קבל נתוני טופס
-      const fromEmail = document.getElementById('fromEmail').value.trim();
-      const toEmail = document.getElementById('toEmail').value.trim();
-      const hours = document.getElementById('hours').value.trim();
-      const templateId = document.getElementById('templateId').value.trim();
-
-      // קריאה אמיתית ל-MailerSend חייבת להתבצע מהשרת שלך!
-      // בדוגמה כאן נשלח פוסט לאותו דומיין (לשרת שלך), ואז מהשרת שלך תשלח ל-MailerSend.
-      // אל תשים את הטוקן כאן בדפדפן!
-      try {
-        const response = await fetch('/send-mail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            from: { email: fromEmail },
-            to: [{ email: toEmail }],
-            personalization: [{
-              email: toEmail,
-              data: { hours: hours }
-            }],
-            template_id: templateId
-          })
-        });
-        const data = await response.json();
-        if (response.ok) {
-          resultMsg.textContent = "המייל נשלח בהצלחה!";
-          resultMsg.className = "success";
-        } else {
-          resultMsg.textContent = "שליחת המייל נכשלה: " + (data.message || response.status);
-          resultMsg.className = "error";
-        }
-      } catch (e) {
-        resultMsg.textContent = "שגיאה בשליחה: " + e.message;
-        resultMsg.className = "error";
-      }
-    }
+  <label>הודעה:</label>
+  <textarea name="message" required></textarea>
   </script>
 </body>
 </html>
