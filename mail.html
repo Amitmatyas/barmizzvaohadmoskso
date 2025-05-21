@@ -2,20 +2,18 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>טופס יצירת קשר</title>
+  <title>טופס יצירת קשר - Formsubmit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       background: #f2f5fa;
       font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .mailer-container {
+    .container {
       background: #fff;
       padding: 36px 28px 28px 28px;
       border-radius: 14px;
@@ -68,8 +66,13 @@
       background: linear-gradient(90deg, #2c88d9 0%, #6d4fcb 100%);
       transform: translateY(-2px) scale(1.03);
     }
+    .note {
+      color: #666;
+      font-size: 0.95em;
+      margin-bottom: 20px;
+    }
     @media (max-width: 400px) {
-      .mailer-container {
+      .container {
         padding: 16px 5vw;
         min-width: unset;
       }
@@ -80,9 +83,13 @@
   </style>
 </head>
 <body>
-  <div class="mailer-container">
+  <div class="container">
     <h2>טופס יצירת קשר</h2>
-    <form name="contact" method="POST" data-netlify="true" action="/thank-you">
+    <div class="note">* לאחר השליחה בפעם הראשונה, יש לאשר את המייל שלך בקישור שישלח אליך</div>
+    <form action="https://formsubmit.co/amitmatyas@gmail.com" method="POST">
+      <!-- שנה לכתובת המייל שלך! -->
+      <input type="hidden" name="_captcha" value="false">
+      
       <label for="name">שם:</label>
       <input type="text" id="name" name="name" required>
       
