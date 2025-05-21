@@ -2,8 +2,11 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>תזכורת לאירוע</title>
+    <title>תזכורת בר מצווה</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <style>
         body {
             font-family: 'Heebo', Arial, sans-serif;
@@ -61,79 +64,93 @@
             font-weight: 600;
             margin-top: 10px;
         }
+        .info {
+            color: #0984e3;
+            font-weight: 600;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>הגדרת תזכורת לאירוע</h2>
-        <form id="reminderForm">
-            <label for="eventDateTime">תאריך ושעה של האירוע</label>
-            <input type="datetime-local" id="eventDateTime" required>
-
-            <label for="email">אימייל לשליחת התזכורת</label>
-            <input type="email" id="email" placeholder="your@email.com" required>
-
-            <button type="submit">שמור ושלח תזכורות</button>
-        </form>
-        <div id="msg"></div>
-    </div>
+<div class="container">
+    <h2>הגדרת תזכורת בר מצווה</h2>
+    <form id="reminderForm">
+        <label for="eventDateTime">תאריך ושעה של האירוע</label>
+        <input type="datetime-local" id="eventDateTime" required>
+        <label for="email">אימייל לשליחת התזכורת</label>
+        <input type="email" id="email" placeholder="your@email.com" required>
+        <label for="apiToken">API Token של Mailersend</label>
+        <input type="text" id="apiToken" placeholder="הדבק את הטוקן כאן" required>
+        <button type="submit">שמור תזכורת</button>
+    </form>
+    <div id="msg"></div>
+</div>
 <script>
-async function sendMail(toEmail, hours) {
-    const token = 'PASTE_YOUR_MAILERSEND_TOKEN_HERE';
-    const template_id = 'jpzkmgq8emmg059v';
-    const fromEmail = 'reminder@matyas.com';
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
+    authDomain: "tester-69fa9.firebaseapp.com",
+    projectId: "tester-69fa9",
+    storageBucket: "tester-69fa9.firebasestorage.app",
+    messagingSenderId: "378563229004",
+    appId: "1:378563229004:web:5136b724eb84fd00e44be9",
+    measurementId: "G-BFJ1QQM3MS"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    return fetch("https://api.mailersend.com/v1/email", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({
-            from: { email: fromEmail },
-            to: [{ email: toEmail }],
-            personalization: [{
-                email: toEmail,
-                data: { hours }
-            }],
-            template_id
-        })
-    })
-    .then(r=>r.json());
-}
-
-function scheduleMail(to, eventTime, hoursBefore, hoursText) {
-    const msBefore = hoursBefore * 60 * 60 * 1000;
-    const now = Date.now();
-    const eventMs = (new Date(eventTime)).getTime();
-    const timeout = eventMs - msBefore - now;
-    if (timeout < 0) return; // זמן עבר, לא קובעים טיימר
-
-    setTimeout(()=>{
-        sendMail(to, hoursText)
-        .then(()=>console.log(`נשלחה תזכורת: ${hoursText}`))
-        .catch(()=>console.log("שגיאה בשליחת מייל"));
-    }, timeout);
-}
-
-document.getElementById("reminderForm").onsubmit = function(e){
+  document.getElementById("reminderForm").onsubmit = async function(e){
     e.preventDefault();
     const eventDateTime = document.getElementById("eventDateTime").value;
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const apiToken = document.getElementById("apiToken").value.trim();
     const msg = document.getElementById("msg");
 
-    if (!eventDateTime || !email) {
-        msg.innerHTML = '<div class="error">יש למלא את כל השדות</div>';
-        return;
+    // בדיקת תקינות טוקן
+    if (!apiToken || apiToken.length < 10) {
+      msg.innerHTML = '<div class="error">יש להזין API Token תקין.</div>';
+      console.error("API Token חסר או קצר מדי");
+      return;
+    } else {
+      console.log("API Token הוזן, הכל תקין");
     }
 
-    // נשלח מיד אם יש טיימרים שעברו (לבדיקה/פיתוח)
-    // בפועל, בשרת אפשר לקבוע Job עתידי אמיתי!
-    scheduleMail(email, eventDateTime, 24, "מחר");
-    scheduleMail(email, eventDateTime, 2, "בעוד שעתיים");
-    msg.innerHTML = '<div class="success">התזכורות הוגדרו! אתה תקבל מייל "מחר" ו-"בעוד שעתיים" לפני האירוע.</div>';
-};
+    // בדיקת תקינות דוא"ל
+    if (!validateEmail(email)) {
+      msg.innerHTML = '<div class="error">אימייל לא תקין.</div>';
+      console.error("אימייל לא תקין");
+      return;
+    }
+
+    // בדיקת תאריך בעתיד
+    if (!eventDateTime || new Date(eventDateTime) < new Date()) {
+      msg.innerHTML = '<div class="error">יש לבחור תאריך עתידי.</div>';
+      console.error("נבחר תאריך לא תקין");
+      return;
+    }
+
+    // שמירה ב-Firebase
+    try {
+      await db.collection("bar_mizzva_reminder").doc(email).set({
+        email,
+        eventDateTime,
+        apiToken,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "waiting"
+      });
+      msg.innerHTML = '<div class="success">האירוע נשמר! תזכורת תישלח בזמנים הנכונים.<br><span class="info">שים לב: שליחת המיילים מתבצעת ע"י מערכת צד שרת.</span></div>';
+      console.log("נשמר ל-Firebase בהצלחה", {email, eventDateTime});
+    } catch (err) {
+      msg.innerHTML = '<div class="error">שגיאה בשמירה ל-Firebase</div>';
+      console.error("בעיה בשמירה ל-Firebase", err);
+    }
+  }
+
+  function validateEmail(email) {
+    // בדיקה בסיסית של אימייל
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+  }
 </script>
 </body>
 </html>
