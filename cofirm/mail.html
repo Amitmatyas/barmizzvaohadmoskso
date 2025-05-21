@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>שליחת מייל ניסיון - עמית מטיאס</title>
+    <title>טופס שליחת מייל</title>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -37,8 +37,8 @@
             color: #555;
             font-weight: bold;
         }
-        input[type="email"],
         input[type="text"],
+        input[type="email"],
         textarea {
             width: calc(100% - 22px); /* מלא רוחב בניכוי פדינג ובורדר */
             padding: 10px;
@@ -70,16 +70,30 @@
             color: #777;
             margin-top: 20px;
         }
+        .success-message {
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none; /* מוסתר כברירת מחדל */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>שליחת מייל ניסיון</h2>
-        <form action="https://formsubmit.co/amitmatyas@gmail.com" method="POST">
+        <h2>טופס שליחת מייל ניסיון</h2>
+        <form id="emailForm" action="https://formsubmit.co/amitmatyas@gmail.com" method="POST">
             
-            <input type="hidden" name="_subject" value="ניסיון">
+            <input type="hidden" name="_subject" value="ניסיון שליחת מייל מעוצב">
 
-            <textarea name="תוכן_הודעה_HTML" style="display: none;">
+            <label for="full_name">שם השולח (לדוגמה):</label>
+            <input type="text" id="full_name" name="שם_השולח" placeholder="הכנס/י את שמך" required>
+
+            <label for="sender_email">מייל השולח (תשמש ל'השב אל'):</label>
+            <input type="email" id="sender_email" name="מייל_השולח" placeholder="הכנס/י את המייל שלך" required>
+            
+            <input type="hidden" name="_replyto" id="reply_to_email">
+
+            <textarea name="תוכן_מייל_HTML" style="display: none;">
                 <!DOCTYPE html>
                 <html lang="he" dir="rtl">
                 <head>
@@ -145,12 +159,31 @@
                 </html>
             </textarea>
 
-            <button type="submit">שלח מייל לעמית</button>
+            <button type="submit">שלח מייל</button>
         </form>
         <p class="note">
-            לאחר הלחיצה, תופנה/י לדף אישור. בדוק/בדקי את תיבת הדואר הנכנס של amitmatyas@gmail.com
-            (וגם את תיקיית הספאם/קידומי מכירות) כדי לראות את המייל.
+            לאחר הלחיצה, תופנה/י לדף אישור של FormSubmit.
+            זכור/זכרי לאמת את כתובת המייל amitmatyas@gmail.com ב-FormSubmit.
+            המייל שתקבל/י יכלול את כל הפרטים ששלחת, כולל קוד ה-HTML המעוצב.
         </p>
+        <div id="successMessage" class="success-message">
+            המייל נשלח בהצלחה!
+        </div>
     </div>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            // מעדכן את שדה ה-Reply-To להיות המייל שהוזן על ידי המשתמש
+            const senderEmail = document.getElementById('sender_email').value;
+            document.getElementById('reply_to_email').value = senderEmail;
+
+            // ניתן להציג הודעת הצלחה אם לא מפנים לדף אחר
+            // event.preventDefault(); // מונע את השליחה הרגילה של הטופס אם רוצים לטפל ב-JS
+            // document.getElementById('successMessage').style.display = 'block';
+            // setTimeout(() => {
+            //     document.getElementById('successMessage').style.display = 'none';
+            // }, 5000);
+        });
+    </script>
 </body>
 </html>
