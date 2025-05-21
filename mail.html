@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>שליחת מייל עם MailerSend</title>
+  <title>טופס יצירת קשר</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -51,7 +51,7 @@
       min-height: 60px;
       resize: vertical;
     }
-    #sendEmailBtn {
+    button[type="submit"] {
       background: linear-gradient(90deg, #37a0fa 0%, #7f5fff 100%);
       color: #fff;
       border: none;
@@ -64,22 +64,9 @@
       box-shadow: 0 2px 8px rgba(55, 160, 250, 0.08);
       margin-top: 10px;
     }
-    #sendEmailBtn:hover {
+    button[type="submit"]:hover {
       background: linear-gradient(90deg, #2c88d9 0%, #6d4fcb 100%);
       transform: translateY(-2px) scale(1.03);
-    }
-    #resultMsg {
-      margin-top: 18px;
-      font-size: 1em;
-      color: #2d3a4d;
-      min-height: 22px;
-      transition: color 0.3s;
-    }
-    #resultMsg.error {
-      color: #f44336;
-    }
-    #resultMsg.success {
-      color: #23b26d;
     }
     @media (max-width: 400px) {
       .mailer-container {
@@ -94,19 +81,19 @@
 </head>
 <body>
   <div class="mailer-container">
-    <h2>שלח מייל עם MailerSend</h2>
-<form name="contact" method="POST" data-netlify="true">
-  <label>שם:</label>
-  <input type="text" name="name" required>
-  
-  <label>אימייל:</label>
-  <input type="email" name="email" required>
-  
-  <label>משתנה:</label>
-  <input type="hours" name="hours" required>
-
-  <label>הודעה:</label>
-  <textarea name="message" required></textarea>
-  </script>
+    <h2>טופס יצירת קשר</h2>
+    <form name="contact" method="POST" data-netlify="true" action="/thank-you">
+      <label for="name">שם:</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="email">אימייל:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="message">הודעה:</label>
+      <textarea id="message" name="message" required></textarea>
+      
+      <button type="submit">שלח</button>
+    </form>
+  </div>
 </body>
 </html>
