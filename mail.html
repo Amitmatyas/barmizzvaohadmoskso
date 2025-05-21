@@ -2,105 +2,64 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>טופס יצירת קשר - Formsubmit</title>
+  <title>שליחת מייל</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      background: #f2f5fa;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      background: #fff;
-      padding: 36px 28px 28px 28px;
-      border-radius: 14px;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
-      text-align: center;
-      min-width: 320px;
-      max-width: 95vw;
-    }
-    h2 {
-      margin-bottom: 18px;
-      color: #2d3a4d;
-      font-size: 1.35em;
-      letter-spacing: 1px;
-    }
-    label {
-      display: block;
-      margin: 12px 0 6px 0;
-      text-align: right;
-      color: #4b5b6b;
-      font-size: 1em;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #e0e4ea;
-      border-radius: 5px;
-      font-size: 1em;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
-    button[type="submit"] {
-      background: linear-gradient(90deg, #37a0fa 0%, #7f5fff 100%);
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      padding: 13px 32px;
-      font-size: 1.07em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 2px 8px rgba(55, 160, 250, 0.08);
-      margin-top: 10px;
-    }
-    button[type="submit"]:hover {
-      background: linear-gradient(90deg, #2c88d9 0%, #6d4fcb 100%);
-      transform: translateY(-2px) scale(1.03);
-    }
-    .note {
-      color: #666;
-      font-size: 0.95em;
-      margin-bottom: 20px;
-    }
-    @media (max-width: 400px) {
-      .container {
-        padding: 16px 5vw;
-        min-width: unset;
-      }
-      h2 {
-        font-size: 1.1em;
-      }
-    }
+    body { background: #f2f5fa; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .container { background: #fff; padding: 36px 28px 28px 28px; border-radius: 14px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12); text-align: center; min-width: 320px; max-width: 95vw; }
+    h2 { margin-bottom: 18px; color: #2d3a4d; font-size: 1.35em; }
+    label { display: block; margin: 12px 0 6px 0; text-align: right; color: #4b5b6b; font-size: 1em; }
+    input, textarea, select { width: 100%; padding: 10px; border: 1px solid #e0e4ea; border-radius: 5px; font-size: 1em; margin-bottom: 10px; box-sizing: border-box; font-family: inherit; }
+    textarea { min-height: 60px; resize: vertical; }
+    button[type="submit"] { background: linear-gradient(90deg, #37a0fa 0%, #7f5fff 100%); color: #fff; border: none; border-radius: 7px; padding: 13px 32px; font-size: 1.07em; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; box-shadow: 0 2px 8px rgba(55, 160, 250, 0.08); margin-top: 10px; }
+    button[type="submit"]:hover { background: linear-gradient(90deg, #2c88d9 0%, #6d4fcb 100%); transform: translateY(-2px) scale(1.03); }
+    @media (max-width: 400px) { .container { padding: 16px 5vw; min-width: unset; } h2 { font-size: 1.1em; } }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>טופס יצירת קשר</h2>
-    <div class="note">* לאחר השליחה בפעם הראשונה, יש לאשר את המייל שלך בקישור שישלח אליך</div>
-    <form action="https://formsubmit.co/amitmatyas@outlook.com" method="POST">
-      <!-- שנה לכתובת המייל שלך! -->
+    <h2>שליחת אימייל</h2>
+    <form id="contactForm" action="https://formsubmit.co/youremail@email.com" method="POST">
+      <!-- שנה את כתובת המייל כאן! -->
       <input type="hidden" name="_captcha" value="false">
-      
-      <label for="name">שם:</label>
+      <input type="hidden" name="_template" value="table">
+      <!-- subject ישלח כנושא המייל -->
+      <label for="subject">נושא:</label>
+      <select id="subject" name="subject" required>
+        <option value="">בחר נושא</option>
+        <option value="בקשה לאישור">בקשה לאישור</option>
+        <option value="דיווח שעות">דיווח שעות</option>
+        <option value="שאלה כללית">שאלה כללית</option>
+      </select>
+
+      <label for="name">שם השולח:</label>
       <input type="text" id="name" name="name" required>
-      
-      <label for="email">אימייל:</label>
-      <input type="email" id="email" name="email" required>
-      
-      <label for="message">הודעה:</label>
-      <textarea id="message" name="message" required></textarea>
-      
+
+      <label for="hours">מספר שעות:</label>
+      <input type="number" id="hours" name="hours" min="0" required>
+
+      <label for="customHtml">הודעה (HTML, אפשר לשים את {{hours}}):</label>
+      <textarea id="customHtml" name="customHtml" placeholder="שלום {{name}}, עבדת {{hours}} שעות השבוע. כל הכבוד!"></textarea>
+
+      <!-- כאן תכין את ההודעה המלאה ל-html שנשלח -->
+      <input type="hidden" name="message" id="messageHtml">
+
       <button type="submit">שלח</button>
     </form>
   </div>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      // הכנס ערכים לתוך תבנית ה-html
+      var name = document.getElementById('name').value;
+      var hours = document.getElementById('hours').value;
+      var template = document.getElementById('customHtml').value;
+      // החלפת משתנים בתבנית
+      var html = template
+        .replace(/{{\s*name\s*}}/gi, name)
+        .replace(/{{\s*hours\s*}}/gi, hours);
+      document.getElementById('messageHtml').value = html;
+      // אפשר גם להוסיף את השם והנושא בתחילת ההודעה אם תרצה
+    });
+  </script>
 </body>
 </html>
