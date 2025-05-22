@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>עמוד התחברות - בר מצווה עמית</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+    <title>עמוד ניהול - אישורי הגעה</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>">
     <style>
-        /* העיצוב (CSS) מוטמע כאן */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -14,211 +13,20 @@
             padding: 20px;
             color: #333;
         }
-
         .container {
-            max-width: 500px;
-            margin: 100px auto;
+            max-width: 800px;
+            margin: 60px auto;
             background-color: #fff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 30px;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #0069d9;
-        }
-
-        .error-message {
-            color: #E01628;
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
-            display: none;
-        }
-
-        /* סגנון עבור עמוד ניהול אישורי הגעה */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            display: none;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: right;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #e9e9e9;
-        }
-
-        /* סגנון לסטטוס ההגעה */
-        .current-status-text.status-מגיע-ה {
-            color: #4BF370; /* צבע ירוק */
-        }
-
-        .current-status-text.status-לא-מגיע-ה {
-            color: #E01628; /* צבע אדום */
-        }
-
-        /* סגנון להודעות מצב */
-        #statusMessage {
-            text-align: center;
-            margin-top: 20px;
-            font-weight: bold;
-            color: #555;
-            display: none;
-        }
-        #statusMessage.error {
-            color: red;
-        }
-        #statusMessage.loading {
-            color: blue;
-        }
-
-        /* סגנון לכפתורי הסטטוס בתוך התא */
-        .status-buttons-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .status-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-
-        .attend-btn {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .attend-btn:hover:not(:disabled) {
-            background-color: #c3e6cb;
-        }
-
-        .not-attend-btn {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .not-attend-btn:hover:not(:disabled) {
-            background-color: #f5c6cb;
-        }
-
-        .status-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .current-status-text {
-            font-weight: bold;
-            min-width: 80px;
-            text-align: center;
-        }
-
-        td a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        td a:hover {
-            text-decoration: underline;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            border-top-color: #007bff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .email-status {
-            font-size: 0.85em;
-            margin-left: 10px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .email-status.sending {
-            background-color: #e9ecef;
-            color: #495057;
-        }
-
-        .email-status.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .email-status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
         #logout-btn {
             position: absolute;
             top: 20px;
@@ -230,33 +38,119 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            display: none;
         }
-
         #logout-btn:hover {
             background-color: #f5c6cb;
+        }
+        #statusMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555;
+            display: none;
+        }
+        #statusMessage.error { color: red; }
+        #statusMessage.loading { color: blue; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #e9e9e9; }
+        .current-status-text.status-מגיע-ה { color: #4BF370; }
+        .current-status-text.status-לא-מגיע-ה { color: #E01628; }
+        .status-buttons-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .attend-btn {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .attend-btn:hover:not(:disabled) { background-color: #c3e6cb; }
+        .not-attend-btn {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .not-attend-btn:hover:not(:disabled) { background-color: #f5c6cb; }
+        .status-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .current-status-text {
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+        td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        td a:hover { text-decoration: underline; }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .email-status {
+            font-size: 0.85em;
+            margin-left: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .email-status.sending {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .email-status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .email-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .bulk-email-container {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-    <div id="login-container" class="container">
-        <h1>כניסה למערכת ניהול אישורי הגעה</h1>
-        <form id="login-form"> <div class="form-group">
-                <label for="username">שם משתמש:</label>
-                <input type="text" id="username" value="Amit Matyas">
-            </div>
-            <div class="form-group">
-                <label for="password">סיסמה:</label>
-                <input type="password" id="password">
-            </div>
-            <button type="submit" id="login-button">התחבר</button> <div id="error-message" class="error-message">שם משתמש או סיסמה שגויים</div>
-        </form>
-    </div>
-
-    <div id="admin-container" class="container" style="display: none; max-width: 800px;">
+    <div id="admin-container" class="container">
         <button id="logout-btn">התנתק</button>
         <h1>רשימת אישורי הגעה</h1>
-        
         <div id="statusMessage">טוען נתונים...</div>
         <table id="attendeesTable">
             <thead>
@@ -266,12 +160,9 @@
                     <th>סטטוס הגעה</th>
                 </tr>
             </thead>
-            <tbody id="attendeesTableBody">
-            </tbody>
+            <tbody id="attendeesTableBody"></tbody>
         </table>
-
-        <div class="bulk-email-container" style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 5px; border: 1px solid #ddd;">
-            <!-- הוספת בחירת סוג הודעה מעל התיבה -->
+        <div class="bulk-email-container">
             <div class="form-group">
                 <label for="bulk-email-type">סוג הודעה ({{title}}):</label>
                 <select id="bulk-email-type" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd; font-size: 16px;">
@@ -290,112 +181,70 @@
             </div>
         </div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
     <script>
-        // וודא ש-EmailJS מאותחל לפני השימוש
-        if (typeof emailjs === 'undefined' || !emailjs.init) {
-            console.error("EmailJS library not loaded or initialized correctly.");
-            // ייתכן שתרצה להציג הודעת שגיאה למשתמש כאן
-        } else {
+        // EmailJS init
+        if (typeof emailjs !== 'undefined' && emailjs.init) {
             emailjs.init({
                 publicKey: "xMUcc8A1COpyd1SSY",
                 blockHeadless: false,
                 limitRate: true
             });
-            console.log("EmailJS v4 initialized successfully.");
         }
-
-        // הגדרות Firebase
+        // Firebase config
         const firebaseConfig = {
-             apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
-             authDomain: "tester-69fa9.firebaseapp.com",
-             projectId: "tester-69fa9",
-             storageBucket: "tester-69fa9.firebasestorage.app",
-             messagingSenderId: "378563229004",
-             appId: "1:378563229004:web:5136b724eb84fd00e44be9",
-             measurementId: "G-BFJ1QQM3MS"
+            apiKey: "AIzaSyDlyDbpwcBcWvFnvYHb84dMEpaQFTjv-HY",
+            authDomain: "tester-69fa9.firebaseapp.com",
+            projectId: "tester-69fa9",
+            storageBucket: "tester-69fa9.firebasestorage.app",
+            messagingSenderId: "378563229004",
+            appId: "1:378563229004:web:5136b724eb84fd00e44be9",
+            measurementId: "G-BFJ1QQM3MS"
         };
-
-        // שם הקולקשן ב-Firestore
         const FIRESTORE_COLLECTION_NAME = 'bar_mizzva_attendees';
-
-        // אתחול Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        // קבלת הפניות לאלמנטים בדף
-        const loginContainer = document.getElementById('login-container');
-        const adminContainer = document.getElementById('admin-container');
-        const loginForm = document.getElementById('login-form'); // הפניה לטופס
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
+        // Elements
         const logoutBtn = document.getElementById('logout-btn');
         const attendeesTable = document.getElementById('attendeesTable');
         const attendeesTableBody = document.getElementById('attendeesTableBody');
         const statusMessageDiv = document.getElementById('statusMessage');
         const bulkEmailTextInput = document.getElementById('bulk-email-text');
         const sendBulkEmailBtn = document.getElementById('send-bulk-email-btn');
-        const bulkEmailStatusElement = document.getElementById('bulk-email-status'); // נוסף לשימוש נוח
-
-        // פונקציה לאימות כניסה
-        function validateLogin() {
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-
-            // בדיקת שם משתמש וסיסמה
-            if (username === "Amit Matyas" && password === "AmitMatyas@2012") {
-                // כניסה מוצלחת
-                loginContainer.style.display = 'none';
-                adminContainer.style.display = 'block';
-                logoutBtn.style.display = 'block';
-                document.getElementById('error-message').style.display = 'none'; // וודא שהודעת השגיאה מוסתרת
-                
-                // שינוי כותרת וfavicon לאחר כניסה מוצלחת
-                document.title = "עמוד ניהול - אישורי הגעה";
-                document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>";
-                
-                // טעינת נתוני אישורי הגעה
-                loadAttendees();
-                
+        const bulkEmailStatusElement = document.getElementById('bulk-email-status');
+        // Logout (for demo, just redirect to login page or reload)
+        logoutBtn.addEventListener('click', () => { window.location.reload(); });
+        // Status class helper
+        function getStatusClass(statusString) {
+            if (!statusString) return '';
+            return 'status-' + statusString.replace(/[\s/]/g, '-');
+        }
+        // Update attendance status
+        async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
+            const buttons = rowElement.querySelectorAll('.status-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            try {
+                await db.collection(FIRESTORE_COLLECTION_NAME).doc(attendeeId).update({
+                    attendance: newStatus,
+                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                const statusTextSpan = rowElement.querySelector('.current-status-text');
+                statusTextSpan.textContent = newStatus;
+                statusTextSpan.classList.remove('status-מגיע-ה', 'status-לא-מגיע-ה');
+                statusTextSpan.classList.add(getStatusClass(newStatus));
                 return true;
-            } else {
-                // כניסה נכשלה
-                document.getElementById('error-message').style.display = 'block';
-                passwordInput.value = '';
+            } catch (error) {
+                alert(`שגיאה בעדכון הסטטוס: ${error.message}`);
                 return false;
+            } finally {
+                buttons.forEach(btn => btn.disabled = false);
             }
         }
-
-        // פונקציה ליציאה מהמערכת
-        function logout() {
-            loginContainer.style.display = 'block';
-            adminContainer.style.display = 'none';
-            logoutBtn.style.display = 'none';
-            passwordInput.value = '';
-            document.getElementById('error-message').style.display = 'none';
-            
-            // החזרת כותרת וfavicon למצב הראשוני
-            document.title = "עמוד התחברות - בר מצווה עמית";
-            document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>";
-        }
-
-        // הוספת מאזיני אירועים לכפתורים
-        // השתמש במאזין על הטופס למניעת רענון דף
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // מונע את שליחת הטופס הסטנדרטית ורענון הדף
-            validateLogin();
-        });
-        logoutBtn.addEventListener('click', logout);
-
-        // פונקציה לשליחת מייל למוזמן
-        async function sendEmailToGuest(email, guestName, statusElement, templateId = "barmizzva", customText = null) {
-            // וודא ש-EmailJS מאותחל לפני ניסיון שליחה
+        // Send email to guest
+        async function sendEmailToGuest(email, guestName, statusElement, templateId = "barmizzva", customText = null, emailType = "עדכון") {
             if (typeof emailjs === 'undefined' || !emailjs.send) {
-                console.error("EmailJS library not loaded or initialized correctly.");
                 if (statusElement) {
                     statusElement.textContent = "שגיאה: EmailJS לא מאותחל.";
                     statusElement.className = "email-status error";
@@ -404,108 +253,74 @@
                 alert("שגיאה בשליחת מייל: ספריית EmailJS אינה זמינה.");
                 return false;
             }
-
-            // **בדיקה קריטית: וודא שכתובת המייל קיימת ותקפה**
             if (!email || email.trim() === "" || !email.includes('@') || !email.includes('.')) {
-                console.error(`Attempted to send email to an invalid or empty address: '${email}' for guest: ${guestName}`);
                 if (statusElement) {
                     statusElement.textContent = "שגיאה: כתובת אימייל ריקה/לא תקינה.";
                     statusElement.className = "email-status error";
                     statusElement.style.display = "inline-block";
                 } else {
-                    // הצגה רק אם אין אלמנט סטטוס ספציפי (לדוגמה, כאשר נשלח מייל בודד ולא חלק מהגורף)
                     alert(`שגיאה: לא ניתן לשלוח מייל ל-${guestName} - כתובת האימייל ריקה או לא תקינה.`);
                 }
                 return false;
             }
-
             try {
-                // הצגת אינדיקטור שליחה
                 if (statusElement) {
                     statusElement.textContent = "שולח מייל...";
                     statusElement.className = "email-status sending";
                     statusElement.style.display = "inline-block";
                 }
-
-                // הכנת נתונים לשליחה
                 const templateParams = {
                     to_email: email,
                     guest_name: guestName,
                     to_name: guestName,
                     from_name: "בר מצווה",
-                    reply_to: "no-reply@example.com"
+                    reply_to: "no-reply@example.com",
+                    title: emailType
                 };
-                
-                // הוספת טקסט מותאם אישית אם סופק
-                if (customText !== null) {
-                    templateParams.text = customText;
-                }
-                
-                console.log("Attempting to send email with params:", JSON.stringify(templateParams), "Template ID:", templateId, "Service ID:", "service_laxsrg8");
-                
-                // שליחת המייל באמצעות EmailJS
-                const response = await emailjs.send("service_laxsrg8", templateId, templateParams);
-                
-                console.log("SUCCESS! Email sent to:", email, response.status, response.text);
-                // עדכון חיווי הצלחה
+                if (customText !== null) templateParams.text = customText;
+                await emailjs.send("service_laxsrg8", templateId, templateParams);
                 if (statusElement) {
                     statusElement.textContent = "נשלח בהצלחה";
                     statusElement.className = "email-status success";
                 }
                 return true;
             } catch (error) {
-                console.error("FAILED to send email (detailed):", error);
-                // עדכון חיווי שגיאה
                 if (statusElement) {
                     statusElement.textContent = "שגיאה בשליחה";
                     statusElement.className = "email-status error";
                 }
-                // חיווי שגיאה למשתמש
                 alert(`שגיאה בשליחת מייל: ${error.message || 'בדוק את הקונסול לפרטים נוספים'}`);
                 return false;
             }
         }
-        
-        // פונקציה שמציגה רשימת אורחים לפני שליחת מייל גורף
+        // Bulk email confirm and send
         async function confirmAndSendBulkEmail() {
             const customText = bulkEmailTextInput.value.trim();
-            
+            const emailType = document.getElementById('bulk-email-type').value;
             if (!customText) {
                 bulkEmailStatusElement.textContent = "אנא הזן/הזיני טקסט לעדכון לפני השליחה.";
                 bulkEmailStatusElement.style.color = "#dc3545";
                 return;
             }
-
-            // נטרול כפתור השליחה בזמן התהליך
             sendBulkEmailBtn.disabled = true;
             bulkEmailStatusElement.textContent = "מאתר רשימת אורחים מגיעים...";
             bulkEmailStatusElement.style.color = "#0056b3";
-            
             try {
                 const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
-                                         .where('attendance', '==', 'מגיע/ה')
-                                         .get();
-                                         
-                const attendingGuests = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                
+                    .where('attendance', '==', 'מגיע/ה').get();
+                const attendingGuests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if (attendingGuests.length === 0) {
                     bulkEmailStatusElement.textContent = "לא נמצאו אורחים המסומנים כמגיעים.";
                     bulkEmailStatusElement.style.color = "#dc3545";
                     sendBulkEmailBtn.disabled = false;
                     return;
                 }
-                
-                // בונה את הודעת האישור עם רשימת השמות והמיילים
                 let confirmationMessage = `האם אתה בטוח/ה שברצונך לשלוח את העדכון הבא ל-${attendingGuests.length} אורחים המסומנים כ'מגיע/ה'?\n\n`;
+                confirmationMessage += `סוג הודעה: ${emailType}\n`;
                 confirmationMessage += `הודעה: "${customText}"\n\n`;
                 confirmationMessage += "רשימת נמענים:\n";
-                
                 let validRecipientsCount = 0;
                 attendingGuests.forEach(guest => {
-                    // מוסיף לרשימה רק אורחים עם מייל תקין
                     if (guest.email && guest.email.trim() !== "" && guest.email.includes('@') && guest.email.includes('.')) {
                         confirmationMessage += `- ${guest.full_name} (${guest.email})\n`;
                         validRecipientsCount++;
@@ -513,68 +328,54 @@
                         confirmationMessage += `- ${guest.full_name} (כתובת אימייל לא תקינה/חסרה)\n`;
                     }
                 });
-
                 if (validRecipientsCount === 0) {
-                     bulkEmailStatusElement.textContent = "לא נמצאו נמענים עם כתובת אימייל תקינה.";
-                     bulkEmailStatusElement.style.color = "#dc3545";
-                     sendBulkEmailBtn.disabled = false;
-                     return;
+                    bulkEmailStatusElement.textContent = "לא נמצאו נמענים עם כתובת אימייל תקינה.";
+                    bulkEmailStatusElement.style.color = "#dc3545";
+                    sendBulkEmailBtn.disabled = false;
+                    return;
                 }
-
                 confirmationMessage += `\nסה"כ נמענים תקינים: ${validRecipientsCount}. לחץ 'אישור' כדי לשלוח, או 'ביטול' כדי לבטל.`;
-
-                // מציג את חלון האישור
                 const userConfirmed = confirm(confirmationMessage);
-
                 if (userConfirmed) {
-                    // אם המשתמש אישר, קורא לפונקציית השליחה בפועל
-                    await sendBulkEmailToAttendees(customText, attendingGuests);
+                    await sendBulkEmailToAttendees(customText, attendingGuests, emailType);
                 } else {
-                    // אם המשתמש ביטל
                     bulkEmailStatusElement.textContent = "שליחת העדכון בוטלה על ידי המשתמש.";
-                    bulkEmailStatusElement.style.color = "#ffc107"; // צהוב
+                    bulkEmailStatusElement.style.color = "#ffc107";
                 }
-                
             } catch (error) {
-                console.error("שגיאה בהכנת רשימת נמענים:", error);
                 bulkEmailStatusElement.textContent = `שגיאה בהכנת הרשימה: ${error.message}`;
                 bulkEmailStatusElement.style.color = "#dc3545";
             } finally {
-                sendBulkEmailBtn.disabled = false; // הפעל מחדש את הכפתור בכל מקרה
+                sendBulkEmailBtn.disabled = false;
             }
         }
-
-        // פונקציה לשליחת מייל עדכון לכל האורחים המגיעים (פונקציה פנימית הנקראת לאחר אישור)
-        async function sendBulkEmailToAttendees(customText, attendingGuests) {
+        // Bulk email send
+        async function sendBulkEmailToAttendees(customText, attendingGuests, emailType) {
             bulkEmailStatusElement.textContent = `שולח עדכון ל-${attendingGuests.length} אורחים...`;
             bulkEmailStatusElement.style.color = "#0056b3";
-            
             let successCount = 0;
             let failCount = 0;
-            
             for (const guest of attendingGuests) {
                 if (guest.email && guest.email.trim() !== "" && guest.email.includes('@') && guest.email.includes('.')) {
                     try {
                         await sendEmailToGuest(
-                            guest.email, 
-                            guest.full_name, 
-                            null, 
-                            "barmizzvaupdate", 
-                            customText 
+                            guest.email,
+                            guest.full_name,
+                            null,
+                            "barmizzvaupdate",
+                            customText,
+                            emailType
                         );
                         successCount++;
                         bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
                     } catch (err) {
-                        console.error(`שגיאה בשליחת מייל ל-${guest.full_name} (${guest.email}):`, err);
                         failCount++;
                         bulkEmailStatusElement.textContent = `נשלחו ${successCount} מתוך ${attendingGuests.length} מיילים (${failCount} נכשלו)...`;
                     }
                 } else {
-                    console.warn(`מדלג על שליחת מייל ל-${guest.full_name} עקב כתובת אימייל חסרה או לא תקינה: '${guest.email}'.`);
                     failCount++;
                 }
             }
-            
             bulkEmailStatusElement.textContent = `השליחה הסתיימה: ${successCount} מיילים נשלחו בהצלחה, ${failCount} נכשלו.`;
             if (failCount === 0) {
                 bulkEmailStatusElement.style.color = "#28a745";
@@ -582,56 +383,10 @@
                 bulkEmailStatusElement.style.color = "#ffc107";
             }
         }
-
-        // שינוי: הוספת מאזין אירועים לכפתור "שלח עדכון לכל המגיעים" שיקרא לפונקציה החדשה
         sendBulkEmailBtn.addEventListener('click', confirmAndSendBulkEmail);
-
-        // פונקציה לייצר שם קלאס תקין מסטטוס ההגעה
-        function getStatusClass(statusString) {
-             if (!statusString) return '';
-             return 'status-' + statusString.replace(/[\s/]/g, '-');
-        }
-
-        // פונקציה לעדכון סטטוס ההגעה
-        async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
-            // מצא את הכפתורים בשורה ונטרל אותם בזמן העדכון
-            const buttons = rowElement.querySelectorAll('.status-btn');
-            buttons.forEach(btn => btn.disabled = true);
-
-            try {
-                // עדכון המסמך ב-Firestore
-                await db.collection(FIRESTORE_COLLECTION_NAME).doc(attendeeId).update({
-                    attendance: newStatus,
-                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                // מצא את אלמנט הטקסט שמציג את הסטטוס הנוכחי בשורה
-                const statusTextSpan = rowElement.querySelector('.current-status-text');
-
-                // עדכן את הטקסט של הסטטוס
-                statusTextSpan.textContent = newStatus;
-
-                // הסר את קלאסי הסטטוס הישנים מהספאן
-                statusTextSpan.classList.remove('status-מגיע-ה', 'status-לא-מגיע-ה');
-                // הוסף את קלאס הסטטוס החדש
-                statusTextSpan.classList.add(getStatusClass(newStatus));
-
-                console.log(`Status updated for ${attendeeId} to ${newStatus}`);
-                return true;
-            } catch (error) {
-                console.error(`Error updating status for ${attendeeId}: `, error);
-                alert(`שגיאה בעדכון הסטטוס: ${error.message}`);
-                return false;
-            } finally {
-                // הפעל מחדש את הכפתורים לאחר סיום העדכון
-                buttons.forEach(btn => btn.disabled = false);
-            }
-        }
-
-        // פונקציה להצגת הנתונים בטבלה
+        // Display attendees
         function displayAttendees(attendees) {
             attendeesTableBody.innerHTML = '';
-
             if (attendees.length === 0) {
                 statusMessageDiv.textContent = 'אין אישורי הגעה עדיין.';
                 statusMessageDiv.className = 'statusMessage';
@@ -639,79 +394,54 @@
                 statusMessageDiv.style.display = 'block';
                 return;
             }
-
-            // הצג טבלה והסתר הודעה
             attendeesTable.style.display = 'table';
             statusMessageDiv.style.display = 'none';
-
-            // יצירת שורות הטבלה מנתוני המשתתפים
             attendees.forEach(attendee => {
                 const row = attendeesTableBody.insertRow();
                 row.dataset.id = attendee.id;
-
-                // הוספת תאים לשורה
                 const nameCell = row.insertCell(0);
                 const emailCell = row.insertCell(1);
                 const attendanceCell = row.insertCell(2);
-
-                // הכנסת הנתונים לתאים
                 nameCell.textContent = attendee.full_name;
-
-                // יצירת קישור mailto עבור כתובת האימייל
                 const emailLink = document.createElement('a');
                 emailLink.href = 'mailto:' + attendee.email;
                 emailLink.textContent = attendee.email;
                 emailCell.appendChild(emailLink);
-
-                // יצירת אלמנטים לתא הסטטוס והכפתורים
                 const statusContainer = document.createElement('div');
                 statusContainer.classList.add('status-buttons-container');
-
                 const statusTextSpan = document.createElement('span');
                 statusTextSpan.classList.add('current-status-text');
                 statusTextSpan.textContent = attendee.attendance || 'לא ידוע';
                 statusTextSpan.classList.add(getStatusClass(attendee.attendance));
-
                 const attendBtn = document.createElement('button');
                 attendBtn.textContent = 'מגיע/ה';
                 attendBtn.classList.add('status-btn', 'attend-btn');
                 attendBtn.dataset.id = attendee.id;
                 attendBtn.dataset.status = 'מגיע/ה';
-
                 const notAttendBtn = document.createElement('button');
                 notAttendBtn.textContent = 'לא מגיע/ה';
                 notAttendBtn.classList.add('status-btn', 'not-attend-btn');
                 notAttendBtn.dataset.id = attendee.id;
                 notAttendBtn.dataset.status = 'לא מגיע/ה';
-
-                // יצירת אלמנט לחיווי סטטוס שליחת המייל
                 const emailStatusSpan = document.createElement('span');
                 emailStatusSpan.classList.add('email-status');
                 emailStatusSpan.style.display = 'none';
-
-                // הוספת האלמנטים לתא הסטטוס
                 statusContainer.appendChild(statusTextSpan);
                 statusContainer.appendChild(attendBtn);
                 statusContainer.appendChild(notAttendBtn);
                 statusContainer.appendChild(emailStatusSpan);
                 attendanceCell.appendChild(statusContainer);
-
-                // הוספת מאזיני אירועים לכפתורים
                 attendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status;
-                    
-                    // עדכון הסטטוס בפיירבייס
                     const updateSuccess = await updateAttendanceStatus(id, status, row);
-                    
-                    // אם העדכון הצליח, שלח מייל למוזמן
                     if (updateSuccess) {
                         const guestName = row.cells[0].textContent;
                         const guestEmail = row.cells[1].querySelector('a').textContent;
-                        sendEmailToGuest(guestEmail, guestName, emailStatusSpan);
+                        const emailType = document.getElementById('bulk-email-type')?.value || "עדכון";
+                        sendEmailToGuest(guestEmail, guestName, emailStatusSpan, "barmizzva", null, emailType);
                     }
                 });
-
                 notAttendBtn.addEventListener('click', async (event) => {
                     const id = event.target.dataset.id;
                     const status = event.target.dataset.status;
@@ -719,33 +449,29 @@
                 });
             });
         }
-
-        // פונקציה לטעינת נתונים מ-Firestore
+        // Load attendees from Firestore
         async function loadAttendees() {
             statusMessageDiv.innerHTML = '<div class="loading-spinner"></div> טוען נתונים...';
             statusMessageDiv.className = 'statusMessage loading';
             statusMessageDiv.style.display = 'block';
             attendeesTable.style.display = 'none';
-
             try {
                 const snapshot = await db.collection(FIRESTORE_COLLECTION_NAME)
-                                         .orderBy('timestamp', 'desc')
-                                         .get();
-
+                    .orderBy('timestamp', 'desc')
+                    .get();
                 const attendees = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-
                 displayAttendees(attendees);
-
             } catch (error) {
-                console.error("Error fetching documents: ", error);
                 statusMessageDiv.textContent = `שגיאה בשליפת הנתונים: ${error.message}`;
                 statusMessageDiv.className = 'statusMessage error';
                 attendeesTable.style.display = 'none';
             }
         }
+        // Load on page load
+        loadAttendees();
     </script>
 </body>
 </html>
