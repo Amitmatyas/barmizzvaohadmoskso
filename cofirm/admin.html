@@ -251,7 +251,7 @@
         // EmailJS init
         if (typeof emailjs !== 'undefined' && emailjs.init) {
             emailjs.init({
-                publicKey: "xMUcc8A1COpyd1SSY",
+                publicKey: "lg3bO3V98b_NSySt6",
                 blockHeadless: false,
                 limitRate: true
             });
@@ -375,7 +375,7 @@
                     title: emailType
                 };
                 if (customText !== null) templateParams.text = customText;
-                await emailjs.send("service_laxsrg8", templateId, templateParams);
+                await emailjs.send("service_9wksmlc", templateId, templateParams);
                 if (statusElement) {
                     statusElement.textContent = "נשלח בהצלחה";
                     statusElement.className = "email-status success";
