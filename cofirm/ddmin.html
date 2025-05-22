@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>עמוד ניהול - אישורי הגעה</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>">
+    <title>עמוד התחברות - בר מצווה עמית</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,18 +14,65 @@
             color: #333;
         }
         .container {
-            max-width: 800px;
-            margin: 60px auto;
+            max-width: 500px;
+            margin: 100px auto;
             background-color: #fff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        .error-message {
+            color: #E01628;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+        /* עיצוב עמוד ניהול */
+        #admin-container {
+            max-width: 800px;
+            margin: 100px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
         }
         #logout-btn {
             position: absolute;
@@ -38,6 +85,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
+            display: none;
         }
         #logout-btn:hover {
             background-color: #f5c6cb;
@@ -148,7 +196,22 @@
     </style>
 </head>
 <body>
-    <div id="admin-container" class="container">
+    <div id="login-container" class="container">
+        <h1>כניסה למערכת ניהול אישורי הגעה</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">שם משתמש:</label>
+                <input type="text" id="username" value="Amit Matyas">
+            </div>
+            <div class="form-group">
+                <label for="password">סיסמה:</label>
+                <input type="password" id="password">
+            </div>
+            <button type="submit" id="login-button">התחבר</button>
+            <div id="error-message" class="error-message">שם משתמש או סיסמה שגויים</div>
+        </form>
+    </div>
+    <div id="admin-container">
         <button id="logout-btn">התנתק</button>
         <h1>רשימת אישורי הגעה</h1>
         <div id="statusMessage">טוען נתונים...</div>
@@ -207,6 +270,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         // Elements
+        const loginContainer = document.getElementById('login-container');
+        const adminContainer = document.getElementById('admin-container');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
         const logoutBtn = document.getElementById('logout-btn');
         const attendeesTable = document.getElementById('attendeesTable');
         const attendeesTableBody = document.getElementById('attendeesTableBody');
@@ -214,14 +282,44 @@
         const bulkEmailTextInput = document.getElementById('bulk-email-text');
         const sendBulkEmailBtn = document.getElementById('send-bulk-email-btn');
         const bulkEmailStatusElement = document.getElementById('bulk-email-status');
-        // Logout (for demo, just redirect to login page or reload)
-        logoutBtn.addEventListener('click', () => { window.location.reload(); });
-        // Status class helper
+
+        // כניסה
+        function validateLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            if (username === "Amit Matyas" && password === "AmitMatyas@2012") {
+                loginContainer.style.display = 'none';
+                adminContainer.style.display = 'block';
+                logoutBtn.style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                document.title = "עמוד ניהול - אישורי הגעה";
+                document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧑🏻‍💻</text></svg>";
+                loadAttendees();
+                return true;
+            } else {
+                document.getElementById('error-message').style.display = 'block';
+                passwordInput.value = '';
+                return false;
+            }
+        }
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            validateLogin();
+        });
+        logoutBtn.addEventListener('click', function() {
+            loginContainer.style.display = 'block';
+            adminContainer.style.display = 'none';
+            logoutBtn.style.display = 'none';
+            passwordInput.value = '';
+            document.getElementById('error-message').style.display = 'none';
+            document.title = "עמוד התחברות - בר מצווה עמית";
+            document.querySelector("link[rel='icon']").href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>";
+        });
+
         function getStatusClass(statusString) {
             if (!statusString) return '';
             return 'status-' + statusString.replace(/[\s/]/g, '-');
         }
-        // Update attendance status
         async function updateAttendanceStatus(attendeeId, newStatus, rowElement) {
             const buttons = rowElement.querySelectorAll('.status-btn');
             buttons.forEach(btn => btn.disabled = true);
@@ -242,7 +340,6 @@
                 buttons.forEach(btn => btn.disabled = false);
             }
         }
-        // Send email to guest
         async function sendEmailToGuest(email, guestName, statusElement, templateId = "barmizzva", customText = null, emailType = "עדכון") {
             if (typeof emailjs === 'undefined' || !emailjs.send) {
                 if (statusElement) {
@@ -293,7 +390,6 @@
                 return false;
             }
         }
-        // Bulk email confirm and send
         async function confirmAndSendBulkEmail() {
             const customText = bulkEmailTextInput.value.trim();
             const emailType = document.getElementById('bulk-email-type').value;
@@ -349,7 +445,6 @@
                 sendBulkEmailBtn.disabled = false;
             }
         }
-        // Bulk email send
         async function sendBulkEmailToAttendees(customText, attendingGuests, emailType) {
             bulkEmailStatusElement.textContent = `שולח עדכון ל-${attendingGuests.length} אורחים...`;
             bulkEmailStatusElement.style.color = "#0056b3";
@@ -384,7 +479,7 @@
             }
         }
         sendBulkEmailBtn.addEventListener('click', confirmAndSendBulkEmail);
-        // Display attendees
+
         function displayAttendees(attendees) {
             attendeesTableBody.innerHTML = '';
             if (attendees.length === 0) {
@@ -449,7 +544,6 @@
                 });
             });
         }
-        // Load attendees from Firestore
         async function loadAttendees() {
             statusMessageDiv.innerHTML = '<div class="loading-spinner"></div> טוען נתונים...';
             statusMessageDiv.className = 'statusMessage loading';
@@ -470,8 +564,6 @@
                 attendeesTable.style.display = 'none';
             }
         }
-        // Load on page load
-        loadAttendees();
     </script>
 </body>
 </html>
